@@ -1,0 +1,9 @@
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\Game.exe.config
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\Game.exe
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\Game.pdb
+D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.csproj.AssemblyReference.cache
+D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.Properties.Resources.resources
+D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.csproj.GenerateResource.cache
+D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.csproj.CoreCompileInputs.cache
+D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.exe
+D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.pdb
