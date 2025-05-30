@@ -7,3 +7,4 @@ D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.csproj.GenerateResource.ca
 D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.csproj.CoreCompileInputs.cache
 D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.exe
 D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.pdb
+D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.exe.config
