@@ -13,33 +13,49 @@ namespace Game
     public partial class Form1 : Form
     {
         Bitmap off;
-        Timer tt = new Timer();
+        Timer IntroTimer = new Timer();
+        int CurrentFrame = 0;
+        int IntroFrameCount = 110;
+
         public Form1()
         {
+            this.Icon = new Icon("Assets/Logo.ico");
             this.WindowState = FormWindowState.Maximized;
+            this.FormBorderStyle = FormBorderStyle.None;
             this.Paint += Form1_Paint;
             this.Load += Form1_Load;
-            tt.Tick += Tt_Tick;
-            tt.Start();
-            InitializeComponent();
+            IntroTimer.Tick += IntroTimer_Tick;
         }
 
-        private void Tt_Tick(object sender, EventArgs e)
+        private void IntroTimer_Tick(object sender, EventArgs e)
         {
-            DrawDubb(this.CreateGraphics());
+            CurrentFrame++;
+            if (CurrentFrame > IntroFrameCount)
+            {
+                IntroTimer.Stop();
+                Menu();
+            }
+            else
+            {
+                Graphics g = this.CreateGraphics();
+                g.DrawImage(new Bitmap("Assets/Intro/Intro_Frame_" + CurrentFrame + ".jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            }
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Create
-            // Draw
+            // Start
             off = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
-            tt.Interval = 100;
+            IntroTimer.Interval = 100;
+            IntroTimer.Start();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            DrawDubb(this.CreateGraphics());
+            Graphics g = this.CreateGraphics();
+            g.DrawImage(new Bitmap("Assets/Intro/Intro_Frame_1.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
         }
 
         void DrawDubb(Graphics g)
@@ -55,6 +71,12 @@ namespace Game
             g.Clear(Color.Black);
             // Example: draw a simple rectangle
             g.FillRectangle(Brushes.Red, 50, 50, 100, 100);
+        }
+
+
+        void Menu()
+        {
+
         }
     }
 }
