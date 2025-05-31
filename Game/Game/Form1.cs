@@ -15,7 +15,7 @@ namespace Game
         Bitmap off;
         Timer IntroTimer = new Timer();
         int CurrentFrame = 0;
-        int IntroFrameCount = 110;
+        int IntroFrameCount = 330;
 
         public Form1()
         {
@@ -25,6 +25,12 @@ namespace Game
             this.Paint += Form1_Paint;
             this.Load += Form1_Load;
             IntroTimer.Tick += IntroTimer_Tick;
+            this.MouseMove += Form1_MouseMove;
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+
         }
 
         private void IntroTimer_Tick(object sender, EventArgs e)
@@ -48,7 +54,7 @@ namespace Game
             // Create
             // Start
             off = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
-            IntroTimer.Interval = 100;
+            IntroTimer.Interval = 1;
             IntroTimer.Start();
         }
 
@@ -76,7 +82,8 @@ namespace Game
 
         void Menu()
         {
-
+            Graphics g = this.CreateGraphics();
+            g.DrawImage(new Bitmap("Assets/Intro/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
         }
     }
 }
