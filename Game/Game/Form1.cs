@@ -39,6 +39,7 @@ namespace Game
             if (CurrentFrame > IntroFrameCount)
             {
                 IntroTimer.Stop();
+                player.Stop();
                 Menu();
             }
             else
