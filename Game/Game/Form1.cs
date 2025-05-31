@@ -7,17 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NAudio.Wave;
+
 
 namespace Game
 {
     public partial class Form1 : Form
     {
+        private IWavePlayer selectOutput;
+        private AudioFileReader selectReader;
         Bitmap off;
         Timer IntroTimer = new Timer();
         int CurrentFrame = 0;
-        int IntroFrameCount = 165;
-        private System.Media.SoundPlayer player;
+        int IntroFrameCount = 120;
+        private System.Media.SoundPlayer introSnd;
+        private System.Media.SoundPlayer OmtrxTimeOut;
+        private System.Media.SoundPlayer Select;
         int CurrentMenu = -1;
+        bool skp = false;
 
         public Form1()
         {
@@ -29,6 +36,15 @@ namespace Game
             IntroTimer.Tick += IntroTimer_Tick;
             this.MouseMove += Form1_MouseMove;
             this.MouseDown += Form1_MouseDown;
+            this.KeyDown += Form1_KeyDown;
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode==Keys.Space)
+            {
+                skp=true;
+            }
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -69,25 +85,39 @@ namespace Game
                 {
                     CurrentMenu = 1;
                     Graphics g = this.CreateGraphics();
+                    this.Cursor = Cursors.Hand;
                     g.DrawImage(new Bitmap("Assets/Menu/Menu_Hover_1.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                    StopSelectSound();
+                    PlaySelectSound();
+                    OmtrxTimeOut.Stop();
                 }
                 else if (x >= w * 5 / 64 && x <= w * 133 / 384 && y >= h * 17 / 27 && y <= h * 3 / 4)
                 {
                     CurrentMenu = 2;
                     Graphics g = this.CreateGraphics();
+                    this.Cursor = Cursors.Hand;
                     g.DrawImage(new Bitmap("Assets/Menu/Menu_Hover_2.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                    StopSelectSound();
+                    PlaySelectSound();
+                    OmtrxTimeOut.Stop();
                 }
                 else if (x >= w * 5 / 64 && x <= w * 133 / 384 && y >= h * 169 / 216 && y <= h * 97 / 108)
                 {
                     CurrentMenu = 3;
                     Graphics g = this.CreateGraphics();
+                    this.Cursor = Cursors.Hand;
                     g.DrawImage(new Bitmap("Assets/Menu/Menu_Hover_3.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                    StopSelectSound();
+                    OmtrxTimeOut.PlayLooping();
                 }
                 else if (CurrentMenu != 0)
                 {
                     CurrentMenu = 0;
                     Graphics g = this.CreateGraphics();
+                    this.Cursor = Cursors.Default;
                     g.DrawImage(new Bitmap("Assets/Menu/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                    OmtrxTimeOut.Stop();
+                    StopSelectSound();
                 }
             }
         }
@@ -95,11 +125,12 @@ namespace Game
         private void IntroTimer_Tick(object sender, EventArgs e)
         {
             CurrentFrame++;
-            if (CurrentFrame > IntroFrameCount)
+            if (CurrentFrame > IntroFrameCount || skp==true)
             {
                 IntroTimer.Stop();
-                player.Stop();
+                introSnd.Stop();
                 CurrentMenu = 0;
+                skp= false;
                 Menu();
             }
             else
@@ -115,9 +146,14 @@ namespace Game
             // Create
             // Start
 
+
+            //sounds
+            OmtrxTimeOut = new System.Media.SoundPlayer("Assets/Audio/TimeOut.wav");
+            Select = new System.Media.SoundPlayer("Assets/Audio/OmtrixSelect.wav");
+            Select.LoadAsync();
             // Start background music
-            player = new System.Media.SoundPlayer("Assets/Audio/intro_music.wav");
-            player.PlayLooping();
+            introSnd = new System.Media.SoundPlayer("Assets/Audio/intro_music.wav");
+            introSnd.PlayLooping();
 
             // Start Drawing
             off = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
@@ -152,5 +188,30 @@ namespace Game
             Graphics g = this.CreateGraphics();
             g.DrawImage(new Bitmap("Assets/Menu/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
         }
+        private void StopSelectSound()
+        {
+            if (selectOutput != null)
+            {
+                selectOutput.Stop();
+                selectOutput.Dispose();
+                selectOutput = null;
+            }
+
+            if (selectReader != null)
+            {
+                selectReader.Dispose();
+                selectReader = null;
+            }
+        }
+        private void PlaySelectSound()
+        {
+            StopSelectSound();
+
+            selectReader = new AudioFileReader("Assets/Audio/OmtrixSelect.wav"); 
+            selectOutput = new WaveOutEvent();
+            selectOutput.Init(selectReader);
+            selectOutput.Play();
+        }
+
     }
 }
