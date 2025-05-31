@@ -48,11 +48,18 @@ namespace Game
             }
         }
 
+        private System.Media.SoundPlayer player;
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Create
             // Start
+
+            // Start background music
+            player = new System.Media.SoundPlayer("Assets/Audio/intro_music.wav");
+            player.PlayLooping(); // يشغلها في لوب طول فترة الانترو
+
+
             off = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
             IntroTimer.Interval = 1;
             IntroTimer.Start();
