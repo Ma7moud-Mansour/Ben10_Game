@@ -15,8 +15,12 @@ namespace Game
     public class Map
     {
         public Bitmap img;
-        public Rectangle rectSrc;
-        public Rectangle rectDes;
+        public Rectangle rSrc;
+        public Rectangle rDest;
+        public int StartX;
+        public int StartY;
+        public int Width;
+        public int Height;
         public List<Bitmap> Sky = new List<Bitmap>();
         public List<Bitmap> Mountains = new List<Bitmap>();
         public List<Bitmap> Grass = new List<Bitmap>();
@@ -73,7 +77,10 @@ namespace Game
             else if (e.KeyCode == Keys.Space)
             {
                 Space = true;
-                CurrentMenu = 0;
+                if(IntroTimer.Enabled)
+                {
+                    CurrentMenu = 0;
+                }
             }
         }
 
@@ -197,20 +204,24 @@ namespace Game
             map.Trees.Add(new Bitmap("Assets/Map_1/Trees_2.png"));
             map.Ground.Add(new Bitmap("Assets/Map_1/Ground.png"));
             DrawMap(map);
-            map.rectDes = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
-            map.rectSrc = new Rectangle(0, 0, map.img.Width, map.img.Height);
+            map.StartX = 0;
+            map.StartY = 700;
+            map.Width = 700;
+            map.Height = 500;
+            map.rDest = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            map.rSrc = new Rectangle(map.StartX, map.StartY, map.Width, map.Height);
             Maps.Add(map);
             // Map_2
             map = new Map();
             DrawMap(map);
-            map.rectDes = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
-            map.rectSrc = new Rectangle(0, 0, map.img.Width, map.img.Height);
+            map.rDest = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            map.rSrc = new Rectangle(0, 0, map.img.Width, map.img.Height);
             Maps.Add(map);
             // Map_3
             map = new Map();
             DrawMap(map);
-            map.rectDes = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
-            map.rectSrc = new Rectangle(0, 0, map.img.Width, map.img.Height); 
+            map.rDest = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            map.rSrc = new Rectangle(0, 0, map.img.Width, map.img.Height); 
             Maps.Add(map);
 
             // Start background music
@@ -264,7 +275,7 @@ namespace Game
 
         void DrawScene(Graphics g)
         {
-            g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rectSrc, Maps[CurrentMap].rectDes, GraphicsUnit.Pixel);
+            g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rDest, Maps[CurrentMap].rSrc, GraphicsUnit.Pixel);
         }
 
         private void StopSound()
