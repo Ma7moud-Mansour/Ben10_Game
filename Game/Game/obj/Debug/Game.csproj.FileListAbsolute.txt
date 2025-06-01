@@ -38,3 +38,24 @@ C:\Users\iuy\Desktop\Ben10\Ben10_Game\Game\Game\bin\Debug\NAudio.WinMM.xml
 C:\Users\iuy\Desktop\Ben10\Ben10_Game\Game\Game\bin\Debug\System.Security.AccessControl.xml
 C:\Users\iuy\Desktop\Ben10\Ben10_Game\Game\Game\bin\Debug\System.Security.Principal.Windows.xml
 C:\Users\iuy\Desktop\Ben10\Ben10_Game\Game\Game\obj\Debug\Game.csproj.Up2Date
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\Microsoft.Win32.Registry.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.Asio.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.Core.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.Midi.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.Wasapi.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.WinForms.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.WinMM.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\System.Security.AccessControl.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\System.Security.Principal.Windows.dll
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\Microsoft.Win32.Registry.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.Asio.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.Core.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.Midi.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.Wasapi.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.WinForms.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\NAudio.WinMM.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\System.Security.AccessControl.xml
+D:\College\CS 232\Ben10_Game\Game\Game\bin\Debug\System.Security.Principal.Windows.xml
+D:\College\CS 232\Ben10_Game\Game\Game\obj\Debug\Game.csproj.Up2Date

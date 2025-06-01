@@ -22,9 +22,8 @@ namespace Game
         int IntroFrameCount = 120;
         private System.Media.SoundPlayer introSnd;
         private System.Media.SoundPlayer OmtrxTimeOut;
-        private System.Media.SoundPlayer Select;
         int CurrentMenu = -1;
-        bool skp = false;
+        bool IntroSkip = false;
         bool showMap = false;
         bool showMenu = false;
         bool showIntro = true;
@@ -46,7 +45,7 @@ namespace Game
         {
             if(e.KeyCode==Keys.Space)
             {
-                skp=true;
+                IntroSkip = true;
             }
         }
 
@@ -59,7 +58,7 @@ namespace Game
             if(CurrentMenu == 1)
             {
                 showMap = true;
-                showMenu = false ;
+                showMenu = false;
                 DrawDubb();
             }
             else if (CurrentMenu == 2)
@@ -88,33 +87,43 @@ namespace Game
                 int y = e.Y;
                 if (x >= w * 5 / 64 && x <= w * 133 / 384 && y >= h * 35 / 72 && y <= h * 43 / 72)
                 {
-                    CurrentMenu = 1;
                     Graphics g = this.CreateGraphics();
                     this.Cursor = Cursors.Hand;
+                    if (CurrentMenu != 1)
+                    {
+                        g.DrawImage(new Bitmap("Assets/Menu/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        StopSound();
+                        PlaySound("Select");
+                    }
+                    CurrentMenu = 1;
                     g.DrawImage(new Bitmap("Assets/Menu/Menu_Hover_1.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                    StopSelectSound();
-                    PlaySelectSound();
-                    OmtrxTimeOut.Stop();
                     
                 }
                 else if (x >= w * 5 / 64 && x <= w * 133 / 384 && y >= h * 17 / 27 && y <= h * 3 / 4)
                 {
-                    CurrentMenu = 2;
                     Graphics g = this.CreateGraphics();
                     this.Cursor = Cursors.Hand;
+                    if (CurrentMenu != 2)
+                    {
+                        g.DrawImage(new Bitmap("Assets/Menu/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        StopSound();
+                        PlaySound("Select");
+                    }
+                    CurrentMenu = 2;
                     g.DrawImage(new Bitmap("Assets/Menu/Menu_Hover_2.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                    StopSelectSound();
-                    PlaySelectSound();
-                    OmtrxTimeOut.Stop();
                 }
                 else if (x >= w * 5 / 64 && x <= w * 133 / 384 && y >= h * 169 / 216 && y <= h * 97 / 108)
                 {
-                    CurrentMenu = 3;
                     Graphics g = this.CreateGraphics();
                     this.Cursor = Cursors.Hand;
+                    if (CurrentMenu != 3)
+                    {
+                        g.DrawImage(new Bitmap("Assets/Menu/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        StopSound();
+                        PlaySound("TimeOut");
+                    }
+                    CurrentMenu = 3;
                     g.DrawImage(new Bitmap("Assets/Menu/Menu_Hover_3.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                    StopSelectSound();
-                    OmtrxTimeOut.PlayLooping();
                 }
                 else if (CurrentMenu != 0)
                 {
@@ -122,8 +131,7 @@ namespace Game
                     Graphics g = this.CreateGraphics();
                     this.Cursor = Cursors.Default;
                     g.DrawImage(new Bitmap("Assets/Menu/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                    OmtrxTimeOut.Stop();
-                    StopSelectSound();
+                    StopSound();
                 }
             }
         }
@@ -131,17 +139,15 @@ namespace Game
         private void IntroTimer_Tick(object sender, EventArgs e)
         {
             //CurrentFrame++;
-            if (CurrentFrame > IntroFrameCount || skp==true)
+            if (CurrentFrame > IntroFrameCount || IntroSkip==true)
             {
                 IntroTimer.Stop();
                 introSnd.Stop();
                 CurrentMenu = 0;
-                skp= false;
-
+                IntroSkip= false;
                 showIntro = false;   
                 showMenu = true;     
                 //showMap = false;
-
                 DrawDubb();
             }
             else
@@ -151,7 +157,6 @@ namespace Game
                 DrawDubb();
                 CurrentFrame++;
             }
-
         }
 
 
@@ -159,17 +164,9 @@ namespace Game
         {
             // Create
 
-            // Start
-
-
-            //sounds
-            OmtrxTimeOut = new System.Media.SoundPlayer("Assets/Audio/TimeOut.wav");
-            Select = new System.Media.SoundPlayer("Assets/Audio/OmtrixSelect.wav");
-            Select.LoadAsync();
             // Start background music
             introSnd = new System.Media.SoundPlayer("Assets/Audio/intro_music.wav");
             introSnd.PlayLooping();
-
             // Start Drawing
             off = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
             IntroTimer.Interval = 1;
@@ -178,7 +175,6 @@ namespace Game
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            
             DrawDubb();
         }
 
@@ -188,12 +184,10 @@ namespace Game
             Graphics g = CreateGraphics();
             DrawScene(g2);
             g.DrawImage(off, 0, 0);
-
         }
 
         void DrawScene(Graphics g)
         {
-
             // Drawing logic goes here
             g.Clear(Color.Black);
             // Example: draw a simple rectangle
@@ -228,7 +222,8 @@ namespace Game
                 g.DrawImage(new Bitmap("Assets/Intro/Intro_Frame_1.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
             }
         }
-        private void StopSelectSound()
+
+        private void StopSound()
         {
             if (selectOutput != null)
             {
@@ -236,22 +231,29 @@ namespace Game
                 selectOutput.Dispose();
                 selectOutput = null;
             }
-
             if (selectReader != null)
             {
                 selectReader.Dispose();
                 selectReader = null;
             }
         }
-        private void PlaySelectSound()
-        {
-            StopSelectSound();
 
-            selectReader = new AudioFileReader("Assets/Audio/OmtrixSelect.wav"); 
+        private void PlaySound(string s)
+        {
+            switch (s)
+            {
+                case "Select":
+                    selectReader = new AudioFileReader("Assets/Audio/OmtrixSelect.wav"); 
+                    break;
+                case "TimeOut":
+                    selectReader = new AudioFileReader("Assets/Audio/TimeOut.wav");
+                    break;
+                default:
+                    break;
+            }
             selectOutput = new WaveOutEvent();
             selectOutput.Init(selectReader);
             selectOutput.Play();
         }
-
     }
 }
