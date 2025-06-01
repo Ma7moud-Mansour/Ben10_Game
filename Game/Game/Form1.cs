@@ -18,13 +18,16 @@ namespace Game
         private AudioFileReader selectReader;
         Bitmap off;
         Timer IntroTimer = new Timer();
-        int CurrentFrame = 0;
+        int CurrentFrame = 1;
         int IntroFrameCount = 120;
         private System.Media.SoundPlayer introSnd;
         private System.Media.SoundPlayer OmtrxTimeOut;
         private System.Media.SoundPlayer Select;
         int CurrentMenu = -1;
         bool skp = false;
+        bool showMap = false;
+        bool showMenu = false;
+        bool showIntro = true;
 
         public Form1()
         {
@@ -55,10 +58,9 @@ namespace Game
             int y = e.Y;
             if(CurrentMenu == 1)
             {
-                Graphics g = this.CreateGraphics();
-                g.DrawImage(new Bitmap("Assets/Menu/Cover.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                System.Threading.Thread.Sleep(1000);
-                g.Clear(Color.Black);
+                showMap = true;
+                showMenu = false ;
+                DrawDubb();
             }
             else if (CurrentMenu == 2)
             {
@@ -75,7 +77,10 @@ namespace Game
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            if(CurrentMenu != -1)
+            if (showMap)
+                return;
+
+            if (CurrentMenu != -1)
             {
                 int w = this.ClientSize.Width;
                 int h = this.ClientSize.Height;
@@ -90,6 +95,7 @@ namespace Game
                     StopSelectSound();
                     PlaySelectSound();
                     OmtrxTimeOut.Stop();
+                    
                 }
                 else if (x >= w * 5 / 64 && x <= w * 133 / 384 && y >= h * 17 / 27 && y <= h * 3 / 4)
                 {
@@ -124,26 +130,35 @@ namespace Game
 
         private void IntroTimer_Tick(object sender, EventArgs e)
         {
-            CurrentFrame++;
+            //CurrentFrame++;
             if (CurrentFrame > IntroFrameCount || skp==true)
             {
                 IntroTimer.Stop();
                 introSnd.Stop();
                 CurrentMenu = 0;
                 skp= false;
-                Menu();
+
+                showIntro = false;   
+                showMenu = true;     
+                //showMap = false;
+
+                DrawDubb();
             }
             else
             {
-                Graphics g = this.CreateGraphics();
-                g.DrawImage(new Bitmap("Assets/Intro/Intro_Frame_" + CurrentFrame + ".jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                //Graphics g = this.CreateGraphics();
+                //g.DrawImage(new Bitmap("Assets/Intro/Intro_Frame_" + CurrentFrame + ".jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                DrawDubb();
+                CurrentFrame++;
             }
+
         }
 
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Create
+
             // Start
 
 
@@ -163,30 +178,55 @@ namespace Game
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            Graphics g = this.CreateGraphics();
-            g.DrawImage(new Bitmap("Assets/Intro/Intro_Frame_1.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            
+            DrawDubb();
         }
 
-        void DrawDubb(Graphics g)
+        void DrawDubb()
         {
             Graphics g2 = Graphics.FromImage(off);
+            Graphics g = CreateGraphics();
             DrawScene(g2);
             g.DrawImage(off, 0, 0);
+
         }
 
         void DrawScene(Graphics g)
         {
+
             // Drawing logic goes here
             g.Clear(Color.Black);
             // Example: draw a simple rectangle
-            g.FillRectangle(Brushes.Red, 50, 50, 100, 100);
+            //g.FillRectangle(Brushes.Red, 50, 50, 100, 100);
+            if (showIntro)
+            {
+                g.DrawImage(new Bitmap("Assets/Intro/Intro_Frame_" + CurrentFrame + ".jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            }
+            else if (showMenu && !showMap)
+            {
+                g.DrawImage(new Bitmap("Assets/Menu/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            }
+            else if (showMap)
+            {
+                DrawMap1(g);
+            }
         }
 
-
-        void Menu()
+        void DrawMap1(Graphics g)
         {
-            Graphics g = this.CreateGraphics();
-            g.DrawImage(new Bitmap("Assets/Menu/Menu.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            if (showMap)
+            {
+                g.DrawImage(new Bitmap("Assets/Map_1/Sky.png"), 0, 0);
+                g.DrawImage(new Bitmap("Assets/Map_1/Mountains.png"), 0, 0);
+                g.DrawImage(new Bitmap("Assets/Map_1/Grass.png"), 0, 0);
+                g.DrawImage(new Bitmap("Assets/Map_1/Trees.png"), 0, 0);
+                g.DrawImage(new Bitmap("Assets/Map_1/Trees_2.png"), 0, 0);
+                g.DrawImage(new Bitmap("Assets/Map_1/Ground.png"), 0, 0);
+            }
+            else
+            {
+                g.DrawImage(new Bitmap("Assets/Intro/Intro_Frame_1.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            }
         }
         private void StopSelectSound()
         {
