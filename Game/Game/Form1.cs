@@ -12,6 +12,12 @@ using NAudio.Wave;
 
 namespace Game
 {
+    class Map
+    {
+        public Bitmap img;
+        public Rectangle rectSrc;
+        public Rectangle rectDes;
+    }
     public partial class Form1 : Form
     {
         private IWavePlayer selectOutput;
@@ -24,6 +30,7 @@ namespace Game
         private System.Media.SoundPlayer introSnd;
         int CurrentMenu = -1;
         bool Space = false;
+        Map Sky, Mountains, Grass, Trees, Trees_2, Ground = new Map();
 
         public Form1()
         {
@@ -181,6 +188,29 @@ namespace Game
             off = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
             IntroTimer.Interval = 1;
             IntroTimer.Start();
+
+            //init Map 1
+            Sky.img = new Bitmap("Assets/Map_1/Sky.png");
+            Mountains.img = new Bitmap("Assets/Map_1/Mountains.png");
+            Grass.img = new Bitmap("Assets/Map_1/Grass.png");
+            Trees.img = new Bitmap("Assets/Map_1/Trees.png");
+            Trees_2.img = new Bitmap("Assets/Map_1/Trees_2.png");
+            Ground.img = new Bitmap("Assets/Map_1/Ground.png");
+
+
+            Sky.rectSrc = new Rectangle(0, 0, Sky.img.Width, Sky.img.Height);
+            Mountains.rectSrc = new Rectangle(0, 0, Mountains.img.Width, Mountains.img.Height);
+            Grass.rectSrc = new Rectangle(0, 0, Grass.img.Width, Grass.img.Height);
+            Trees.rectSrc = new Rectangle(0, 0, Trees.img.Width, Trees.img.Height);
+            Trees_2.rectSrc = new Rectangle(0, 0, Trees_2.img.Width, Trees_2.img.Height);
+            Ground.rectSrc = new Rectangle(0, 0, Ground.img.Width, Ground.img.Height);
+
+            Sky.rectDes = new Rectangle(0, ClientSize.Height-Ground.img.Height, ClientSize.Width, ClientSize.Height);
+            Mountains.rectDes = new Rectangle(0, ClientSize.Height - Ground.img.Height, ClientSize.Width, ClientSize.Height);
+            Grass.rectDes = new Rectangle(0, ClientSize.Height - Ground.img.Height, ClientSize.Width, ClientSize.Height);
+            Trees.rectDes = new Rectangle(0, ClientSize.Height - Ground.img.Height, ClientSize.Width, ClientSize.Height);
+            Trees_2.rectDes = new Rectangle(0, ClientSize.Height - Ground.img.Height, ClientSize.Width, ClientSize.Height);
+            Ground.rectDes = new Rectangle(0, ClientSize.Height - Ground.img.Height, ClientSize.Width, ClientSize.Height);
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -205,12 +235,12 @@ namespace Game
 
         void DrawMap1(Graphics g)
         {
-            g.DrawImage(new Bitmap("Assets/Map_1/Sky.png"), 0, 0);
-            g.DrawImage(new Bitmap("Assets/Map_1/Mountains.png"), 0, 0);
-            g.DrawImage(new Bitmap("Assets/Map_1/Grass.png"), 0, 0);
-            g.DrawImage(new Bitmap("Assets/Map_1/Trees.png"), 0, 0);
-            g.DrawImage(new Bitmap("Assets/Map_1/Trees_2.png"), 0, 0);
-            g.DrawImage(new Bitmap("Assets/Map_1/Ground.png"), 0, 0);
+            g.DrawImage(new Bitmap("Assets/Map_1/Sky.png"), 0, 0, Sky.rectDes, GraphicsUnit.Pixel);
+            g.DrawImage(new Bitmap("Assets/Map_1/Mountains.png"), 0, 0, Mountains.rectDes, GraphicsUnit.Pixel);
+            g.DrawImage(new Bitmap("Assets/Map_1/Grass.png"), 0, 0, Grass.rectDes, GraphicsUnit.Pixel);
+            g.DrawImage(new Bitmap("Assets/Map_1/Trees.png"), 0, 0, Trees.rectDes, GraphicsUnit.Pixel);
+            g.DrawImage(new Bitmap("Assets/Map_1/Trees_2.png"), 0, 0, Trees_2.rectDes, GraphicsUnit.Pixel);
+            g.DrawImage(new Bitmap("Assets/Map_1/Ground.png"), 0, 0, Ground.rectDes, GraphicsUnit.Pixel);
         }
 
         private void StopSound()
