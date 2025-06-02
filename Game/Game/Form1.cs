@@ -31,8 +31,6 @@ namespace Game
         public string Name;
         public int X;
         public int Y;
-        public Rectangle rSrc = new Rectangle();
-        public Rectangle rDst = new Rectangle();
         public string CurrentMotion = "Stand_Right";
         public int CurrentFrame = 0;
         public int StandSpeed;
@@ -70,9 +68,18 @@ namespace Game
     {
         public int X = 50;
         public int Y = 400;
+        public Rectangle rSrc = new Rectangle();
+        public Rectangle rDst = new Rectangle();
         public string Character = "Humungousaur";
         public int index = 0;
         public List<Character> Characters = new List<Character>();
+    }
+    public class Enemy : Character
+    {
+        public int Health = 100;
+        public int Damage = 10;
+        public int Speed = 5;
+        public bool IsAlive = true;
     }
     public partial class Form1 : Form
     {
@@ -83,6 +90,7 @@ namespace Game
         private Timer GameTimer = new Timer();
         private List<Map> Maps = new List<Map>();
         private Ben10 Ben = new Ben10();
+        private List<Enemy> Enemies = new List<Enemy>();
         private Bitmap off;
         private int CurrentMap = 0;
         private int CurrentFrame = 1;
