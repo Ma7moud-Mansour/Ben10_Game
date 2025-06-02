@@ -66,10 +66,10 @@ namespace Game
     }
     public class Ben10
     {
-        public Rectangle rDst = new Rectangle(50, 400, 0, 0);
+        public Rectangle rDst = new Rectangle(50, 300, 0, 0);
         public Rectangle rSrc = new Rectangle();
         public string Character = "Humungousaur";
-        public int index = 0;
+        public int Index = 0;
         public List<Character> Characters = new List<Character>();
     }
     public class Enemy : Character
@@ -83,6 +83,7 @@ namespace Game
     }
     public partial class Form1 : Form
     {
+        const int MarginGravity = 100;
         private IWavePlayer selectOutput;
         private AudioFileReader selectReader;
         private System.Media.SoundPlayer introSnd;
@@ -115,6 +116,7 @@ namespace Game
 
         private void GameTimer_Tick(object sender, EventArgs e)
         {
+            Gravity();
             CurrentBenImg = BenImg();
             ManageBenRectanglesTheme();
             DrawDubb();
@@ -412,70 +414,103 @@ namespace Game
             g.Clear(Color.Black);
         }
 
+        private void Gravity()
+        {
+            Color GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
+            if(GravityPixel.A == 0)
+            {
+                for (int i = 0; GravityPixel.A == 0 && i < Ben.Characters[Ben.Index].FallSpeed; i++)
+                {
+                    if (Ben.Characters[Ben.Index].CurrentMotion == "Jump_Right" || Ben.Characters[Ben.Index].CurrentMotion == "Jump_Left" || Ben.Characters[Ben.Index].CurrentMotion == "Fly_Right" || Ben.Characters[Ben.Index].CurrentMotion == "Fly_Left")
+                    {
+                        //if (Ben.rDst.Y + Ben.rDst.Height < this.ClientSize.Height - MarginGravity)
+                        //{
+                        //    Ben.rDst.Y += 5; // Gravity effect
+                        //}
+                        //else
+                        //{
+                        //    Ben.rDst.Y = this.ClientSize.Height - MarginGravity - Ben.rDst.Height;
+                        //    Ben.Characters[Ben.Index].CurrentMotion = "Stand_Right"; // Reset to standing motion
+                        //}
+                    }
+                    else
+                    {
+                        Ben.rDst.Y++; // Gravity effect
+                    }
+                    GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity);
+                }
+            }
+            else 
+            {
+                //for(int i = Maps[CurrentMap].Ground[0].Height; ; i--)
+                //Ben.rDst.Y = 
+            }
+        }
+
         private Bitmap BenImg()
         {
-            Bitmap img = Ben.Characters[Ben.index].Stand_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
-            switch (Ben.Characters[Ben.index].CurrentMotion)
+            Bitmap img = Ben.Characters[Ben.Index].Stand_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+            switch (Ben.Characters[Ben.Index].CurrentMotion)
             {
                 case "Stand_Right":
-                    img = Ben.Characters[Ben.index].Stand_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Stand_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Stand_Left":
-                    img = Ben.Characters[Ben.index].Stand_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Stand_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Walk_Right":
-                    img = Ben.Characters[Ben.index].Walk_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Walk_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Walk_Left":
-                    img = Ben.Characters[Ben.index].Walk_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Walk_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Run_Right":
-                    img = Ben.Characters[Ben.index].Run_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Run_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Run_Left":
-                    img = Ben.Characters[Ben.index].Run_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Run_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Jump_Right":
-                    img = Ben.Characters[Ben.index].Jump_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Jump_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Jump_Left":
-                    img = Ben.Characters[Ben.index].Jump_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Jump_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Fly_Right":
-                    img = Ben.Characters[Ben.index].Fly_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Fly_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Fly_Left":
-                    img = Ben.Characters[Ben.index].Fly_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Fly_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Hit_Right":
-                    img = Ben.Characters[Ben.index].Hit_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Hit_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Hit_Left":
-                    img = Ben.Characters[Ben.index].Hit_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Hit_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Kick_Right":
-                    img = Ben.Characters[Ben.index].Kick_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Kick_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Kick_Left":
-                    img = Ben.Characters[Ben.index].Kick_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Kick_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Fall_Right":
-                    img = Ben.Characters[Ben.index].Fall_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Fall_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Fall_Left":
-                    img = Ben.Characters[Ben.index].Fall_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Fall_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Damage_Right":
-                    img = Ben.Characters[Ben.index].Damage_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Damage_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Damage_Left":
-                    img = Ben.Characters[Ben.index].Damage_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Damage_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Die_Right":
-                    img = Ben.Characters[Ben.index].Die_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Die_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
                 case "Die_Left":
-                    img = Ben.Characters[Ben.index].Die_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
+                    img = Ben.Characters[Ben.Index].Die_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     break;
             }
             return img;
