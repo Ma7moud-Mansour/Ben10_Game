@@ -29,8 +29,8 @@ namespace Game
     public class Character
     {
         public string Name;
-        public int X;
-        public int Y;
+        public int Width;
+        public int Height;
         public string CurrentMotion = "Stand_Right";
         public int CurrentFrame = 0;
         public int StandSpeed;
@@ -66,16 +66,16 @@ namespace Game
     }
     public class Ben10
     {
-        public int X = 50;
-        public int Y = 400;
+        public Rectangle rDst = new Rectangle(50, 400, 0, 0);
         public Rectangle rSrc = new Rectangle();
-        public Rectangle rDst = new Rectangle();
         public string Character = "Humungousaur";
         public int index = 0;
         public List<Character> Characters = new List<Character>();
     }
     public class Enemy : Character
     {
+        public Rectangle rDst = new Rectangle();
+        public Rectangle rSrc = new Rectangle();
         public int Health = 100;
         public int Damage = 10;
         public int Speed = 5;
@@ -92,6 +92,7 @@ namespace Game
         private Ben10 Ben = new Ben10();
         private List<Enemy> Enemies = new List<Enemy>();
         private Bitmap off;
+        private Bitmap CurrentBenImg;
         private int CurrentMap = 0;
         private int CurrentFrame = 1;
         private int IntroFrameCount = 120;
@@ -114,6 +115,8 @@ namespace Game
 
         private void GameTimer_Tick(object sender, EventArgs e)
         {
+            CurrentBenImg = BenImg();
+            ManageBenRectanglesTheme();
             DrawDubb();
         }
 
@@ -280,95 +283,115 @@ namespace Game
                     Character pnn = new Character();
                     pnn.Name = temp[iTemp++];
                     pnn.StandSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Stand_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Stand_Right/" + pnn.Name + "_Stand_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Stand_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Stand_Left/" + pnn.Name + "_Stand_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.WalkSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "Walk/_Right/" + pnn.Name + "_Walk_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Walk_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Left/" + pnn.Name + "_Walk_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.RunSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Run_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Run_Right/" + pnn.Name + "_Run_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Run_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Run_Left/" + pnn.Name + "_Run_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.JumpSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Jump_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Jump_Right/" + pnn.Name + "_Jump_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Jump_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Jump_Left/" + pnn.Name + "_Jump_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.FlySpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Fly_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fly_Right/" + pnn.Name + "_Fly_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Fly_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fly_Left/" + pnn.Name + "_Fly_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.HitSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Hit_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Hit_Right/" + pnn.Name + "_Hit_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Hit_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Hit_Left/" + pnn.Name + "_Hit_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.KickSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Kick_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Kick_Right/" + pnn.Name + "_Kick_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Kick_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Kick_Left/" + pnn.Name + "_Kick_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.FallSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Fall_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fall_Right/" + pnn.Name + "_Fall_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Fall_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fall_Left/" + pnn.Name + "_Fall_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.DamageSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Damage_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Damage_Right/" + pnn.Name + "_Damage_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Damage_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Damage_Left/" + pnn.Name + "_Damage_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     pnn.DieSpeed = int.Parse(temp[iTemp++]);
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Die_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Die_Right/" + pnn.Name + "_Die_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Die_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Die_Left/" + pnn.Name + "_Die_Left_Frame_" + (i + 1) + ".png"));
                     }
+                    iTemp++;
                     Ben.Characters.Add(pnn);
                 }
             }
@@ -389,45 +412,8 @@ namespace Game
             g.Clear(Color.Black);
         }
 
-        void DrawMap(Map map, int W, int H)
+        private Bitmap BenImg()
         {
-            map.img = new Bitmap(W, H);
-            Graphics g = Graphics.FromImage(map.img);
-            for (int i = 0; i < map.Sky.Count; i++)
-            {
-                g.DrawImage(map.Sky[i], 0, 0, map.img.Width, map.img.Height);
-            }
-            for (int i = 0; i < map.Mountains.Count; i++)
-            {
-                g.DrawImage(map.Mountains[i], 0, 0, map.img.Width, map.img.Height);
-            }
-            for (int i = 0; i < map.Grass.Count; i++)
-            {
-                g.DrawImage(map.Grass[i], 0, 0, map.img.Width, map.img.Height);
-            }
-            for (int i = 0; i < map.Trees.Count; i++)
-            {
-                g.DrawImage(map.Trees[i], 0, 0, map.img.Width, map.img.Height);
-            }
-            for (int i = 0; i < map.Ground.Count; i++)
-            {
-                g.DrawImage(map.Ground[i], 0, 0, map.img.Width, map.img.Height);
-            }
-        }
-
-        void DrawDubb()
-        {
-            Graphics g2 = Graphics.FromImage(off);
-            Graphics g = this.CreateGraphics();
-            DrawScene(g2);
-            g.DrawImage(off, 0, 0);
-        }
-
-        void DrawScene(Graphics g)
-        {
-            // Draw Map
-            g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rDst, Maps[CurrentMap].rSrc, GraphicsUnit.Pixel);
-            // Draw Ben10 Character
             Bitmap img = Ben.Characters[Ben.index].Stand_Right_Frames[Ben.Characters[Ben.index].CurrentFrame];
             switch (Ben.Characters[Ben.index].CurrentMotion)
             {
@@ -492,7 +478,60 @@ namespace Game
                     img = Ben.Characters[Ben.index].Die_Left_Frames[Ben.Characters[Ben.index].CurrentFrame];
                     break;
             }
-            g.DrawImage(img, Ben.X, Ben.Y, img.Width, img.Height);
+            return img;
+        }
+
+        private void ManageBenRectanglesTheme()
+        {
+            if (Ben.Characters.Count > 0)
+            {
+                Ben.rDst.Width = CurrentBenImg.Width;
+                Ben.rDst.Height = CurrentBenImg.Height;
+                Ben.rSrc.Width = CurrentBenImg.Width;
+                Ben.rSrc.Height = CurrentBenImg.Height;
+            }
+        }
+
+        private void DrawMap(Map map, int W, int H)
+        {
+            map.img = new Bitmap(W, H);
+            Graphics g = Graphics.FromImage(map.img);
+            for (int i = 0; i < map.Sky.Count; i++)
+            {
+                g.DrawImage(map.Sky[i], 0, 0, map.img.Width, map.img.Height);
+            }
+            for (int i = 0; i < map.Mountains.Count; i++)
+            {
+                g.DrawImage(map.Mountains[i], 0, 0, map.img.Width, map.img.Height);
+            }
+            for (int i = 0; i < map.Grass.Count; i++)
+            {
+                g.DrawImage(map.Grass[i], 0, 0, map.img.Width, map.img.Height);
+            }
+            for (int i = 0; i < map.Trees.Count; i++)
+            {
+                g.DrawImage(map.Trees[i], 0, 0, map.img.Width, map.img.Height);
+            }
+            for (int i = 0; i < map.Ground.Count; i++)
+            {
+                g.DrawImage(map.Ground[i], 0, 0, map.img.Width, map.img.Height);
+            }
+        }
+
+        private void DrawDubb()
+        {
+            Graphics g2 = Graphics.FromImage(off);
+            Graphics g = this.CreateGraphics();
+            DrawScene(g2);
+            g.DrawImage(off, 0, 0);
+        }
+
+        private void DrawScene(Graphics g)
+        {
+            // Draw Map
+            g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rDst, Maps[CurrentMap].rSrc, GraphicsUnit.Pixel);
+            // Draw Ben10 Character
+            g.DrawImage(CurrentBenImg, Ben.rDst, Ben.rSrc, GraphicsUnit.Pixel);
         }
 
         private void StopSound()
