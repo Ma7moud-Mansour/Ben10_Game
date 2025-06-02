@@ -29,7 +29,26 @@ namespace Game
     {
         public int X;
         public int Y;
-        public List<Bitmap> Img = new List<Bitmap>();
+        public int Speed;
+        public List<Bitmap> Walk_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Walk_Left_Frames = new List<Bitmap>();
+        public List<Bitmap> Run_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Run_Left_Frames = new List<Bitmap>();
+        public List<Bitmap> Jump_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Jump_Left_Frames = new List<Bitmap>();
+        public List<Bitmap> Hit_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Hit_Left_Frames = new List<Bitmap>();
+        public List<Bitmap> Fall_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Fall_Left_Frames = new List<Bitmap>();
+        public List<Bitmap> Fly_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Fly_Left_Frames = new List<Bitmap>();
+        public List<Bitmap> Damage_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Damage_Left_Frames = new List<Bitmap>();
+    }
+    public class Ben10
+    {
+        public string Character = "Humungousaur";
+        public List<Character> Characters = new List<Character>();
     }
     public partial class Form1 : Form
     {
@@ -40,11 +59,13 @@ namespace Game
         Timer IntroTimer = new Timer();
         Timer GameTimer = new Timer();
         List<Map> Maps = new List<Map>();
-        List<Character> Characters = new List<Character>();
+        List<Ben10> Ben = new List<Ben10>();
         int CurrentMap = 0;
         int CurrentFrame = 1;
         int IntroFrameCount = 120;
         int CurrentMenu = -1;
+        int XHero = 50;
+        int YHero = 200;
         bool Space = false;
 
         public Form1()
