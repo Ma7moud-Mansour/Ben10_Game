@@ -25,6 +25,12 @@ namespace Game
         public List<Bitmap> Trees = new List<Bitmap>();
         public List<Bitmap> Ground = new List<Bitmap>();
     }
+    public class Character
+    {
+        public int X;
+        public int Y;
+        public List<Bitmap> Img = new List<Bitmap>();
+    }
     public partial class Form1 : Form
     {
         private IWavePlayer selectOutput;
@@ -34,6 +40,7 @@ namespace Game
         Timer IntroTimer = new Timer();
         Timer GameTimer = new Timer();
         List<Map> Maps = new List<Map>();
+        List<Character> Characters = new List<Character>();
         int CurrentMap = 0;
         int CurrentFrame = 1;
         int IntroFrameCount = 120;
