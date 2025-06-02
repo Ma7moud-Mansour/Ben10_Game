@@ -16,11 +16,9 @@ namespace Game
     {
         public Bitmap img;
         public Rectangle rSrc;
-        public Rectangle rDest;
+        public Rectangle rDst;
         public int StartX;
         public int StartY;
-        public int Width;
-        public int Height;
         public List<Bitmap> Sky = new List<Bitmap>();
         public List<Bitmap> Mountains = new List<Bitmap>();
         public List<Bitmap> Grass = new List<Bitmap>();
@@ -203,25 +201,11 @@ namespace Game
             map.Trees.Add(new Bitmap("Assets/Map_1/Trees.png"));
             map.Trees.Add(new Bitmap("Assets/Map_1/Trees_2.png"));
             map.Ground.Add(new Bitmap("Assets/Map_1/Ground.png"));
-            DrawMap(map);
+            DrawMap(map, map.Ground[0].Width, map.Ground[0].Height);
             map.StartX = 0;
-            map.StartY = 700;
-            map.Width = 700;
-            map.Height = 500;
-            map.rDest = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
-            map.rSrc = new Rectangle(map.StartX, map.StartY, map.Width, map.Height);
-            Maps.Add(map);
-            // Map_2
-            map = new Map();
-            DrawMap(map);
-            map.rDest = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
-            map.rSrc = new Rectangle(0, 0, map.img.Width, map.img.Height);
-            Maps.Add(map);
-            // Map_3
-            map = new Map();
-            DrawMap(map);
-            map.rDest = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
-            map.rSrc = new Rectangle(0, 0, map.img.Width, map.img.Height); 
+            map.StartY = map.img.Height - this.ClientSize.Height;
+            map.rDst = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            map.rSrc = new Rectangle(map.StartX, map.StartY, this.ClientSize.Width, this.ClientSize.Height);
             Maps.Add(map);
 
             // Start background music
@@ -239,9 +223,9 @@ namespace Game
             g.Clear(Color.Black);
         }
 
-        void DrawMap(Map map)
+        void DrawMap(Map map, int W, int H)
         {
-            map.img = new Bitmap(this.ClientSize.Width, this.ClientSize.Height);
+            map.img = new Bitmap(W, H);
             Graphics g = Graphics.FromImage(map.img);
             for (int i = 0; i < map.Sky.Count; i++)
             {
@@ -275,7 +259,7 @@ namespace Game
 
         void DrawScene(Graphics g)
         {
-            g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rDest, Maps[CurrentMap].rSrc, GraphicsUnit.Pixel);
+            g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rDst, Maps[CurrentMap].rSrc, GraphicsUnit.Pixel);
         }
 
         private void StopSound()
