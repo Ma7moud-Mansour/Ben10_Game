@@ -31,6 +31,8 @@ namespace Game
         public string Name;
         public int X;
         public int Y;
+        public Rectangle rSrc = new Rectangle();
+        public Rectangle rDst = new Rectangle();
         public string CurrentMotion = "Stand_Right";
         public int CurrentFrame = 0;
         public int StandSpeed;
@@ -264,97 +266,98 @@ namespace Game
             {
                 line = SR.ReadLine();
                 string[] temp = line.Split(',');
+                int iTemp = 0;
                 if(temp.Count() >= 0 && temp.Count() <= 31)
                 {
                     Character pnn = new Character();
-                    pnn.Name = temp[0];
-                    pnn.StandSpeed = int.Parse(temp[1]);
-                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    pnn.Name = temp[iTemp++];
+                    pnn.StandSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Stand_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Stand_Right/" + pnn.Name + "_Stand_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[3]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Stand_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Stand_Left/" + pnn.Name + "_Stand_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.WalkSpeed = int.Parse(temp[4]);
-                    for (int i = 0; i < int.Parse(temp[5]); i++)
+                    pnn.WalkSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "Walk/_Right/" + pnn.Name + "_Walk_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[6]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Walk_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Left/" + pnn.Name + "_Walk_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.RunSpeed = int.Parse(temp[7]);
-                    for (int i = 0; i < int.Parse(temp[8]); i++)
+                    pnn.RunSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Run_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Run_Right/" + pnn.Name + "_Run_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[9]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Run_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Run_Left/" + pnn.Name + "_Run_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.JumpSpeed = int.Parse(temp[10]);
-                    for (int i = 0; i < int.Parse(temp[11]); i++)
+                    pnn.JumpSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Jump_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Jump_Right/" + pnn.Name + "_Jump_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[12]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Jump_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Jump_Left/" + pnn.Name + "_Jump_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.FlySpeed = int.Parse(temp[13]);
-                    for (int i = 0; i < int.Parse(temp[14]); i++)
+                    pnn.FlySpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Fly_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fly_Right/" + pnn.Name + "_Fly_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[15]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Fly_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fly_Left/" + pnn.Name + "_Fly_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.HitSpeed = int.Parse(temp[16]);
-                    for (int i = 0; i < int.Parse(temp[17]); i++)
+                    pnn.HitSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Hit_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Hit_Right/" + pnn.Name + "_Hit_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[18]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Hit_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Hit_Left/" + pnn.Name + "_Hit_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.KickSpeed = int.Parse(temp[19]);
-                    for (int i = 0; i < int.Parse(temp[20]); i++)
+                    pnn.KickSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Kick_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Kick_Right/" + pnn.Name + "_Kick_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[21]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Kick_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Kick_Left/" + pnn.Name + "_Kick_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.FallSpeed = int.Parse(temp[22]);
-                    for (int i = 0; i < int.Parse(temp[23]); i++)
+                    pnn.FallSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Fall_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fall_Right/" + pnn.Name + "_Fall_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[24]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Fall_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fall_Left/" + pnn.Name + "_Fall_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.DamageSpeed = int.Parse(temp[25]);
-                    for (int i = 0; i < int.Parse(temp[26]); i++)
+                    pnn.DamageSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Damage_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Damage_Right/" + pnn.Name + "_Damage_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[27]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Damage_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Damage_Left/" + pnn.Name + "_Damage_Left_Frame_" + (i + 1) + ".png"));
                     }
-                    pnn.DieSpeed = int.Parse(temp[28]);
-                    for (int i = 0; i < int.Parse(temp[29]); i++)
+                    pnn.DieSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Die_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Die_Right/" + pnn.Name + "_Die_Right_Frame_" + (i + 1) + ".png"));
                     }
-                    for (int i = 0; i < int.Parse(temp[30]); i++)
+                    for (int i = 0; i < int.Parse(temp[iTemp++]); i++)
                     {
                         pnn.Die_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Die_Left/" + pnn.Name + "_Die_Left_Frame_" + (i + 1) + ".png"));
                     }
