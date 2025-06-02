@@ -1,0 +1,2 @@
+Character_Name,StandS,StandR,StandL,WalkS,WalkR,WalkL,RunS,RunR,RunL,JumpS,JumpR,JumpL,FlyS,FlyR,FlyL,HitS,HitR,HitL,KickS,KickR,KickL,FallS,FallR,FallL,DamageS,DamageR,DamageL,DieS,DieR,DieL
+Humungousaur,1,0,0,5,0,0,15,0,0,3,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0

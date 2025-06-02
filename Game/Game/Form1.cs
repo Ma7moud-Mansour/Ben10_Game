@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -27,26 +28,44 @@ namespace Game
     }
     public class Character
     {
+        public string Name;
         public int X;
         public int Y;
-        public int Speed;
+        public int StandSpeed;
+        public List<Bitmap> Stand_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Stand_Left_Frames = new List<Bitmap>();
+        public int WalkSpeed;
         public List<Bitmap> Walk_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Walk_Left_Frames = new List<Bitmap>();
+        public int RunSpeed;
         public List<Bitmap> Run_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Run_Left_Frames = new List<Bitmap>();
+        public int JumpSpeed;
         public List<Bitmap> Jump_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Jump_Left_Frames = new List<Bitmap>();
-        public List<Bitmap> Hit_Right_Frames = new List<Bitmap>();
-        public List<Bitmap> Hit_Left_Frames = new List<Bitmap>();
-        public List<Bitmap> Fall_Right_Frames = new List<Bitmap>();
-        public List<Bitmap> Fall_Left_Frames = new List<Bitmap>();
+        public int FlySpeed;
         public List<Bitmap> Fly_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Fly_Left_Frames = new List<Bitmap>();
+        public int HitSpeed;
+        public List<Bitmap> Hit_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Hit_Left_Frames = new List<Bitmap>();
+        public int KickSpeed;
+        public List<Bitmap> Kick_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Kick_Left_Frames = new List<Bitmap>();
+        public int FallSpeed;
+        public List<Bitmap> Fall_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Fall_Left_Frames = new List<Bitmap>();
+        public int DamageSpeed;
         public List<Bitmap> Damage_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Damage_Left_Frames = new List<Bitmap>();
+        public int DieSpeed;
+        public List<Bitmap> Die_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Die_Left_Frames = new List<Bitmap>();
     }
     public class Ben10
     {
+        public int X = 50;
+        public int Y = 200;
         public string Character = "Humungousaur";
         public List<Character> Characters = new List<Character>();
     }
@@ -59,13 +78,11 @@ namespace Game
         Timer IntroTimer = new Timer();
         Timer GameTimer = new Timer();
         List<Map> Maps = new List<Map>();
-        List<Ben10> Ben = new List<Ben10>();
+        Ben10 Ben = new Ben10();
         int CurrentMap = 0;
         int CurrentFrame = 1;
         int IntroFrameCount = 120;
         int CurrentMenu = -1;
-        int XHero = 50;
-        int YHero = 200;
         bool Space = false;
 
         public Form1()
@@ -215,7 +232,6 @@ namespace Game
             }
         }
 
-
         private void Form1_Load(object sender, EventArgs e)
         {
             // Create
@@ -235,6 +251,74 @@ namespace Game
             map.rDst = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
             map.rSrc = new Rectangle(map.StartX, map.StartY, this.ClientSize.Width, this.ClientSize.Height);
             Maps.Add(map);
+
+            // Ben10 Characters
+            StreamReader SR = new StreamReader("Read.txt");
+            string line;
+            if(!SR.EndOfStream)
+                line = SR.ReadLine();
+            while (!SR.EndOfStream)
+            {
+                line = SR.ReadLine();
+                string[] temp = line.Split(',');
+                if(temp.Count() >= 0 && temp.Count() <= 31)
+                {
+                    Character pnn = new Character();
+                    pnn.Name = temp[0];
+                    pnn.StandSpeed = int.Parse(temp[1]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.WalkSpeed = int.Parse(temp[4]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.RunSpeed = int.Parse(temp[7]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.JumpSpeed = int.Parse(temp[10]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.FlySpeed = int.Parse(temp[13]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.HitSpeed = int.Parse(temp[16]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.KickSpeed = int.Parse(temp[19]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.FallSpeed = int.Parse(temp[22]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.DamageSpeed = int.Parse(temp[25]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    pnn.DieSpeed = int.Parse(temp[28]);
+                    for (int i = 0; i < int.Parse(temp[2]); i++)
+                    {
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right_" + (i + 1) + ".png"));
+                    }
+                    Ben.Characters.Add(pnn);
+                }
+            }
+
 
             // Start background music
             introSnd = new System.Media.SoundPlayer("Assets/Audio/intro_music.wav");
