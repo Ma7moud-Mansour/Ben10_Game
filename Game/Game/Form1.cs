@@ -66,7 +66,7 @@ namespace Game
     }
     public class Ben10
     {
-        public Rectangle rDst = new Rectangle(50, 300, 0, 0);
+        public Rectangle rDst = new Rectangle(50, 820, 0, 0);
         public Rectangle rSrc = new Rectangle();
         public string Character = "Humungousaur";
         public int Index = 0;
@@ -437,13 +437,17 @@ namespace Game
                     {
                         Ben.rDst.Y++; // Gravity effect
                     }
-                    GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity);
+                    GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
                 }
             }
-            else 
+            else if (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height - 1).A != 0)
             {
-                //for(int i = Maps[CurrentMap].Ground[0].Height; ; i--)
-                //Ben.rDst.Y = 
+                int i = Maps[CurrentMap].Ground[0].Height - 1;
+                while (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, i).A != 0)
+                {
+                    i--;
+                }    
+                Ben.rDst.Y = i - (Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height) + MarginGravity - CurrentBenImg.Height;
             }
         }
 
