@@ -71,6 +71,10 @@ namespace Game
         public string Character = "Humungousaur";
         public int Index = 0;
         public List<Character> Characters = new List<Character>();
+        public Bitmap CurrentBenImg;
+        public string BenDirection = "Right";
+        public string BenMotion = "Stand_Right";
+        public bool BenAcessMove = true;
     }
     public class Enemy : Character
     {
@@ -93,7 +97,6 @@ namespace Game
         private Ben10 Ben = new Ben10();
         private List<Enemy> Enemies = new List<Enemy>();
         private Bitmap off;
-        private Bitmap CurrentBenImg;
         private int CurrentMap = 0;
         private int CurrentFrame = 1;
         private int IntroFrameCount = 120;
@@ -116,15 +119,27 @@ namespace Game
 
         private void GameTimer_Tick(object sender, EventArgs e)
         {
+            BenMotionImg(Ben.BenMotion, Ben.BenDirection);
+            BenMotion(Ben.BenMotion, Ben.BenDirection, Ben.Characters[Ben.Index].StandSpeed);
             Gravity();
-            CurrentBenImg = BenImg();
+            Ben.CurrentBenImg = BenImg();
             ManageBenRectanglesTheme();
             DrawDubb();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape && !IntroTimer.Enabled)
+            if (e.KeyCode == Keys.Right)
+            {
+                Ben.BenMotion = "Walk";
+                Ben.BenDirection = "Right";
+            }
+            else if (e.KeyCode == Keys.Left)
+            {
+                Ben.BenMotion = "Walk";
+                Ben.BenDirection = "Left";
+            }
+            else if (e.KeyCode == Keys.Escape && !IntroTimer.Enabled)
             {
                 if (GameTimer.Enabled)
                 {
@@ -414,6 +429,52 @@ namespace Game
             g.Clear(Color.Black);
         }
 
+        private void BenMotion(string motion, string direction, int speed)
+        {
+            if (motion == "Walk" && direction == "Right")
+            {
+                if (Ben.rDst.X + Ben.rDst.Width < this.ClientSize.Width)
+                {
+                    Ben.rDst.X += speed;
+                }
+                else
+                {
+                    Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
+                }
+            }
+            else if (motion == "Walk" && direction == "Left")
+            {
+                if (Ben.rDst.X > 0)
+                {
+                    Ben.rDst.X -= speed;
+                }
+                else
+                {
+                    Ben.rDst.X = 0;
+                }
+            }
+        }
+
+        private void BenMotionImg(string motion, string direction)
+        {
+            if (Ben.Characters.Count > 0)
+            {
+                //if (Ben.Characters[Ben.Index].CurrentMotion != motion)
+                //{
+                //    Ben.Characters[Ben.Index].CurrentMotion = motion;
+                //    Ben.Characters[Ben.Index].CurrentFrame = 0;
+                //}
+                //else
+                //{
+                //    Ben.Characters[Ben.Index].CurrentFrame++;
+                //    if (Ben.Characters[Ben.Index].CurrentFrame >= Ben.Characters[Ben.Index].Stand_Right_Frames.Count)
+                //    {
+                //        Ben.Characters[Ben.Index].CurrentFrame = 0;
+                //    }
+                //}
+            }
+        }
+
         private void Gravity()
         {
             Color GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
@@ -447,7 +508,7 @@ namespace Game
                 {
                     i--;
                 }    
-                Ben.rDst.Y = i - (Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height) + MarginGravity - CurrentBenImg.Height;
+                Ben.rDst.Y = i - (Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height) + MarginGravity - Ben.CurrentBenImg.Height;
             }
         }
 
@@ -524,10 +585,10 @@ namespace Game
         {
             if (Ben.Characters.Count > 0)
             {
-                Ben.rDst.Width = CurrentBenImg.Width;
-                Ben.rDst.Height = CurrentBenImg.Height;
-                Ben.rSrc.Width = CurrentBenImg.Width;
-                Ben.rSrc.Height = CurrentBenImg.Height;
+                Ben.rDst.Width = Ben.CurrentBenImg.Width;
+                Ben.rDst.Height = Ben.CurrentBenImg.Height;
+                Ben.rSrc.Width = Ben.CurrentBenImg.Width;
+                Ben.rSrc.Height = Ben.CurrentBenImg.Height;
             }
         }
 
@@ -570,7 +631,7 @@ namespace Game
             // Draw Map
             g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rDst, Maps[CurrentMap].rSrc, GraphicsUnit.Pixel);
             // Draw Ben10 Character
-            g.DrawImage(CurrentBenImg, Ben.rDst, Ben.rSrc, GraphicsUnit.Pixel);
+            g.DrawImage(Ben.CurrentBenImg, Ben.rDst, Ben.rSrc, GraphicsUnit.Pixel);
         }
 
         private void StopSound()
