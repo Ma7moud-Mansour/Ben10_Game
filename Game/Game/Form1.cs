@@ -75,6 +75,7 @@ namespace Game
         public string BenDirection = "Right";
         public string BenMotion = "Stand_Right";
         public bool BenAcessMove = true;
+        public string ReadyMotion = "Not_Ready";
     }
     public class Enemy : Character
     {
@@ -93,8 +94,8 @@ namespace Game
         private System.Media.SoundPlayer introSnd;
         private Timer IntroTimer = new Timer();
         private Timer GameTimer = new Timer();
-        private List<Map> Maps = new List<Map>();
         private Ben10 Ben = new Ben10();
+        private List<Map> Maps = new List<Map>();
         private List<Enemy> Enemies = new List<Enemy>();
         private Bitmap off;
         private int CurrentMap = 0;
@@ -110,17 +111,18 @@ namespace Game
             this.FormBorderStyle = FormBorderStyle.None;
             this.Paint += Form1_Paint;
             this.Load += Form1_Load;
-            IntroTimer.Tick += IntroTimer_Tick;
-            GameTimer.Tick += GameTimer_Tick;
             this.MouseMove += Form1_MouseMove;
             this.MouseDown += Form1_MouseDown;
             this.KeyDown += Form1_KeyDown;
+            this.KeyUp += Form1_KeyUp;
+            IntroTimer.Tick += IntroTimer_Tick;
+            GameTimer.Tick += GameTimer_Tick;
         }
 
         private void GameTimer_Tick(object sender, EventArgs e)
         {
             BenMotionImg(Ben.BenMotion, Ben.BenDirection);
-            BenMotion(Ben.BenMotion, Ben.BenDirection, Ben.Characters[Ben.Index].StandSpeed);
+            BenMotion(Ben.BenMotion, Ben.BenDirection);
             Gravity();
             Ben.CurrentBenImg = BenImg();
             ManageBenRectanglesTheme();
@@ -129,35 +131,92 @@ namespace Game
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Right)
+            if(Ben.BenAcessMove)
             {
-                Ben.BenMotion = "Walk";
-                Ben.BenDirection = "Right";
-            }
-            else if (e.KeyCode == Keys.Left)
-            {
-                Ben.BenMotion = "Walk";
-                Ben.BenDirection = "Left";
-            }
-            else if (e.KeyCode == Keys.Escape && !IntroTimer.Enabled)
-            {
-                if (GameTimer.Enabled)
+                if (e.KeyCode == Keys.Right)
                 {
-                    GameTimer.Stop();
+                    if(Ben.ReadyMotion != "Run_Right")
+                    {
+                        Ben.BenMotion = "Walk";
+                        if (Ben.ReadyMotion != "Ready_Run_Right" && Ben.ReadyMotion != "Not_Ready_Run_Right")
+                        {
+                            Ben.ReadyMotion = "Ready_Run_Right";
+                        }
+                        else
+                        {
+                            Ben.ReadyMotion = "Not_Ready_Run_Right";
+                        }
+                    }
+                    else
+                    {
+                        Ben.BenMotion = "Run";
+                    }
+                    Ben.BenDirection = "Right";
+                }
+                else if (e.KeyCode == Keys.Left)
+                {
+                    if (Ben.ReadyMotion != "Run_Left")
+                    {
+                        Ben.BenMotion = "Walk";
+                        if (Ben.ReadyMotion != "Ready_Run_Left" && Ben.ReadyMotion != "Not_Ready_Run_Left")
+                        {
+                            Ben.ReadyMotion = "Ready_Run_Left";
+                        }
+                        else
+                        {
+                            Ben.ReadyMotion = "Not_Ready_Run_Left";
+                        }
+                    }
+                    else
+                    {
+                        Ben.BenMotion = "Run";
+                    }
+                    Ben.BenDirection = "Left";
+                }
+                else if (e.KeyCode == Keys.Escape && !IntroTimer.Enabled)
+                {
+                    if (GameTimer.Enabled)
+                    {
+                        GameTimer.Stop();
+                    }
+                    else
+                    {
+                        GameTimer.Start();
+                    }
+                }
+                else if (e.KeyCode == Keys.Space)
+                {
+                    Space = true;
+                    if(IntroTimer.Enabled)
+                    {
+                        CurrentMenu = 0;
+                    }
+                }
+            }
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(Ben.BenAcessMove)
+            {
+                if (e.KeyCode == Keys.Right && Ben.ReadyMotion == "Ready_Run_Right")
+                {
+                    Ben.ReadyMotion = "Run_Right";
+                }
+                else if (e.KeyCode == Keys.Left && Ben.ReadyMotion == "Ready_Run_Left")
+                {
+                    Ben.ReadyMotion = "Run_Left";
                 }
                 else
                 {
-                    GameTimer.Start();
+                    Ben.ReadyMotion = "Not_Ready";
                 }
             }
-            else if (e.KeyCode == Keys.Space)
+            else
             {
-                Space = true;
-                if(IntroTimer.Enabled)
-                {
-                    CurrentMenu = 0;
-                }
+                Ben.ReadyMotion = "Not_Ready";
             }
+            Ben.BenMotion = "Stand";
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -429,29 +488,72 @@ namespace Game
             g.Clear(Color.Black);
         }
 
-        private void BenMotion(string motion, string direction, int speed)
+        private void BenMotion(string motion, string direction)
         {
-            if (motion == "Walk" && direction == "Right")
+            switch (direction)
             {
-                if (Ben.rDst.X + Ben.rDst.Width < this.ClientSize.Width)
-                {
-                    Ben.rDst.X += speed;
-                }
-                else
-                {
-                    Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
-                }
-            }
-            else if (motion == "Walk" && direction == "Left")
-            {
-                if (Ben.rDst.X > 0)
-                {
-                    Ben.rDst.X -= speed;
-                }
-                else
-                {
-                    Ben.rDst.X = 0;
-                }
+                case "Right":
+                    {
+                        switch (motion)
+                        {
+                            case "Walk":
+                                {
+                                    if (Ben.rDst.X + Ben.rDst.Width < this.ClientSize.Width)
+                                    {
+                                        Ben.rDst.X += Ben.Characters[Ben.Index].WalkSpeed;
+                                    }
+                                    else
+                                    {
+                                        Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
+                                    }
+                                    break;
+                                }
+                            case "Run":
+                                {
+                                    if (Ben.rDst.X + Ben.rDst.Width < this.ClientSize.Width)
+                                    {
+                                        Ben.rDst.X += Ben.Characters[Ben.Index].RunSpeed;
+                                    }
+                                    else
+                                    {
+                                        Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
+                                    }
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case "Left":
+                    {
+                        switch (motion)
+                        {
+                            case "Walk":
+                                {
+                                    if (Ben.rDst.X > 0)
+                                    {
+                                        Ben.rDst.X -= Ben.Characters[Ben.Index].WalkSpeed;
+                                    }
+                                    else
+                                    {
+                                        Ben.rDst.X = 0;
+                                    }
+                                    break;
+                                }
+                            case "Run":
+                                {
+                                    if (Ben.rDst.X > 0)
+                                    {
+                                        Ben.rDst.X -= Ben.Characters[Ben.Index].RunSpeed;
+                                    }
+                                    else
+                                    {
+                                        Ben.rDst.X = 0;
+                                    }
+                                    break;
+                                }
+                        }
+                        break;
+                    }
             }
         }
 
