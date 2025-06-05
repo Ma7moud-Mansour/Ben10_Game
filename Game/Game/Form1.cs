@@ -25,6 +25,7 @@ namespace Game
         public List<Bitmap> Grass = new List<Bitmap>();
         public List<Bitmap> Trees = new List<Bitmap>();
         public List<Bitmap> Ground = new List<Bitmap>();
+        public int MarginGravity = 50;
     }
     public class Character
     {
@@ -74,6 +75,7 @@ namespace Game
         public Bitmap CurrentBenImg;
         public string BenDirection = "Right";
         public string BenMotion = "Stand_Right";
+        public int CurrentSpeed;
         public bool BenAcessMove = true;
         public string ReadyMotion = "Not_Ready";
     }
@@ -88,7 +90,6 @@ namespace Game
     }
     public partial class Form1 : Form
     {
-        const int MarginGravity = 100;
         private IWavePlayer selectOutput;
         private AudioFileReader selectReader;
         private System.Media.SoundPlayer introSnd;
@@ -124,6 +125,7 @@ namespace Game
             BenMotionImg(Ben.BenMotion, Ben.BenDirection);
             BenMotion(Ben.BenMotion, Ben.BenDirection);
             Gravity();
+            Scrolling();
             Ben.CurrentBenImg = BenImg();
             ManageBenRectanglesTheme();
             DrawDubb();
@@ -181,6 +183,7 @@ namespace Game
                     }
                     else
                     {
+                        CurrentMenu = -1;
                         GameTimer.Start();
                     }
                 }
@@ -489,6 +492,62 @@ namespace Game
             g.Clear(Color.Black);
         }
 
+        private void Scrolling()
+        {
+            if(Ben.BenMotion == "Run")
+            {
+                int x = Ben.CurrentSpeed;
+            }
+            if (Ben.BenDirection == "Right")
+            {
+                if(Ben.rDst.X > this.ClientSize.Width / 3 && (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run" || Ben.BenMotion == "Fly" || Ben.BenMotion == "Jump"))
+                {
+                    if (Maps[CurrentMap].rSrc.X < Maps[CurrentMap].img.Width - this.ClientSize.Width)
+                    {
+                        Maps[CurrentMap].rSrc.X += Ben.CurrentSpeed;
+                        if (Ben.rDst.X < 2 * this.ClientSize.Width / 3)
+                        {
+                            Ben.rDst.X -= Ben.CurrentSpeed - Ben.Characters[Ben.Index].WalkSpeed;
+                        }
+                    }
+                    else
+                    {
+                        Maps[CurrentMap].rSrc.X = Maps[CurrentMap].img.Width - this.ClientSize.Width;
+                    }
+                }
+            }
+            else if (Ben.BenDirection == "Left")
+            {
+                if (Ben.rDst.X < 2 * this.ClientSize.Width / 3 && (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run" || Ben.BenMotion == "Fly" || Ben.BenMotion == "Jump"))
+                {
+                    if (Maps[CurrentMap].rSrc.X > 0)
+                    {
+                        Maps[CurrentMap].rSrc.X -= Ben.CurrentSpeed;
+                        if (Ben.rDst.X < 2 * this.ClientSize.Width / 3)
+                        {
+                            Ben.rDst.X += Ben.CurrentSpeed + Ben.Characters[Ben.Index].WalkSpeed;
+                        }
+                    }
+                    else
+                    {
+                        Maps[CurrentMap].rSrc.X = 0;
+                    }
+                }
+            }
+            //if (Ben.rDst.X + Ben.rDst.Width > this.ClientSize.Width - 100 && Maps[CurrentMap].StartX + Maps[CurrentMap].img.Width > this.ClientSize.Width)
+            //{
+            //    Maps[CurrentMap].StartX -= Ben.Characters[Ben.Index].WalkSpeed;
+            //    Maps[CurrentMap].rSrc.X = Maps[CurrentMap].StartX;
+            //    Maps[CurrentMap].rDst.X = 0;
+            //}
+            //else if (Ben.rDst.X < 100 && Maps[CurrentMap].StartX < 0)
+            //{
+            //    Maps[CurrentMap].StartX += Ben.Characters[Ben.Index].WalkSpeed;
+            //    Maps[CurrentMap].rSrc.X = Maps[CurrentMap].StartX;
+            //    Maps[CurrentMap].rDst.X = 0;
+            //}
+        }
+
         private void BenMotion(string motion, string direction)
         {
             switch (direction)
@@ -507,6 +566,7 @@ namespace Game
                                     {
                                         Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
                                     }
+                                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].WalkSpeed;
                                     break;
                                 }
                             case "Run":
@@ -519,6 +579,7 @@ namespace Game
                                     {
                                         Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
                                     }
+                                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].RunSpeed;
                                     break;
                                 }
                         }
@@ -538,6 +599,7 @@ namespace Game
                                     {
                                         Ben.rDst.X = 0;
                                     }
+                                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].WalkSpeed;
                                     break;
                                 }
                             case "Run":
@@ -550,6 +612,7 @@ namespace Game
                                     {
                                         Ben.rDst.X = 0;
                                     }
+                                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].RunSpeed;
                                     break;
                                 }
                         }
@@ -580,20 +643,20 @@ namespace Game
 
         private void Gravity()
         {
-            Color GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
+            Color GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
             if(GravityPixel.A == 0)
             {
                 for (int i = 0; GravityPixel.A == 0 && i < Ben.Characters[Ben.Index].FallSpeed; i++)
                 {
                     if (Ben.Characters[Ben.Index].CurrentMotion == "Jump_Right" || Ben.Characters[Ben.Index].CurrentMotion == "Jump_Left" || Ben.Characters[Ben.Index].CurrentMotion == "Fly_Right" || Ben.Characters[Ben.Index].CurrentMotion == "Fly_Left")
                     {
-                        //if (Ben.rDst.Y + Ben.rDst.Height < this.ClientSize.Height - MarginGravity)
+                        //if (Ben.rDst.Y + Ben.rDst.Height < this.ClientSize.Height - Maps[CurrentMap].MarginGravity)
                         //{
                         //    Ben.rDst.Y += 5; // Gravity effect
                         //}
                         //else
                         //{
-                        //    Ben.rDst.Y = this.ClientSize.Height - MarginGravity - Ben.rDst.Height;
+                        //    Ben.rDst.Y = this.ClientSize.Height - Maps[CurrentMap].MarginGravity - Ben.rDst.Height;
                         //    Ben.Characters[Ben.Index].CurrentMotion = "Stand_Right"; // Reset to standing motion
                         //}
                     }
@@ -601,17 +664,17 @@ namespace Game
                     {
                         Ben.rDst.Y++; // Gravity effect
                     }
-                    GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
+                    GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
                 }
             }
-            else if (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, Ben.rDst.Y + Ben.rDst.Height - MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height - 1).A != 0)
+            else if (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height - 1).A != 0)
             {
                 int i = Maps[CurrentMap].Ground[0].Height - 1;
-                while (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2, i).A != 0)
+                while (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, i).A != 0)
                 {
                     i--;
-                }    
-                Ben.rDst.Y = i - (Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height) + MarginGravity - Ben.CurrentBenImg.Height;
+                }
+                Ben.rDst.Y = i - (Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height) + Maps[CurrentMap].MarginGravity - Ben.CurrentBenImg.Height;
             }
         }
 
