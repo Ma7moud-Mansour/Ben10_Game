@@ -76,6 +76,7 @@ namespace Game
         public string BenDirection = "Right";
         public string BenMotion = "Stand_Right";
         public int CurrentSpeed;
+        public int CurrentFramesCt;
         public bool BenAcessMove = true;
         public string ReadyMotion = "Not_Ready";
     }
@@ -376,7 +377,7 @@ namespace Game
                     pnn.WalkSpeed = int.Parse(temp[iTemp++]);
                     for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
-                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "Walk/_Right/" + pnn.Name + "_Walk_Right_Frame_" + (i + 1) + ".png"));
+                        pnn.Walk_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Walk_Right/" + pnn.Name + "_Walk_Right_Frame_" + (i + 1) + ".png"));
                     }
                     iTemp++;
                     for (int i = 0; i < int.Parse(temp[iTemp]); i++)
@@ -494,10 +495,6 @@ namespace Game
 
         private void Scrolling()
         {
-            if(Ben.BenMotion == "Run")
-            {
-                int x = Ben.CurrentSpeed;
-            }
             if (Ben.BenDirection == "Right")
             {
                 if(Ben.rDst.X > this.ClientSize.Width / 3 && (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run" || Ben.BenMotion == "Fly" || Ben.BenMotion == "Jump"))
@@ -507,7 +504,11 @@ namespace Game
                         Maps[CurrentMap].rSrc.X += Ben.CurrentSpeed;
                         if (Ben.rDst.X < 2 * this.ClientSize.Width / 3)
                         {
-                            Ben.rDst.X -= Ben.CurrentSpeed - Ben.Characters[Ben.Index].WalkSpeed;
+                            Ben.rDst.X -= Ben.CurrentSpeed - Ben.Characters[Ben.Index].StandSpeed;
+                        }
+                        else
+                        {
+                            Ben.rDst.X -= Ben.CurrentSpeed;
                         }
                     }
                     else
@@ -523,9 +524,13 @@ namespace Game
                     if (Maps[CurrentMap].rSrc.X > 0)
                     {
                         Maps[CurrentMap].rSrc.X -= Ben.CurrentSpeed;
-                        if (Ben.rDst.X < 2 * this.ClientSize.Width / 3)
+                        if (Ben.rDst.X > this.ClientSize.Width / 3)
                         {
-                            Ben.rDst.X += Ben.CurrentSpeed + Ben.Characters[Ben.Index].WalkSpeed;
+                            Ben.rDst.X += Ben.CurrentSpeed + Ben.Characters[Ben.Index].StandSpeed;
+                        }
+                        else
+                        {
+                            Ben.rDst.X += Ben.CurrentSpeed;
                         }
                     }
                     else
@@ -566,7 +571,6 @@ namespace Game
                                     {
                                         Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
                                     }
-                                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].WalkSpeed;
                                     break;
                                 }
                             case "Run":
@@ -579,7 +583,6 @@ namespace Game
                                     {
                                         Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
                                     }
-                                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].RunSpeed;
                                     break;
                                 }
                         }
@@ -599,7 +602,6 @@ namespace Game
                                     {
                                         Ben.rDst.X = 0;
                                     }
-                                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].WalkSpeed;
                                     break;
                                 }
                             case "Run":
@@ -612,7 +614,6 @@ namespace Game
                                     {
                                         Ben.rDst.X = 0;
                                     }
-                                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].RunSpeed;
                                     break;
                                 }
                         }
@@ -625,19 +626,19 @@ namespace Game
         {
             if (Ben.Characters.Count > 0)
             {
-                //if (Ben.Characters[Ben.Index].CurrentMotion != motion)
-                //{
-                //    Ben.Characters[Ben.Index].CurrentMotion = motion;
-                //    Ben.Characters[Ben.Index].CurrentFrame = 0;
-                //}
-                //else
-                //{
-                //    Ben.Characters[Ben.Index].CurrentFrame++;
-                //    if (Ben.Characters[Ben.Index].CurrentFrame >= Ben.Characters[Ben.Index].Stand_Right_Frames.Count)
-                //    {
-                //        Ben.Characters[Ben.Index].CurrentFrame = 0;
-                //    }
-                //}
+                if (Ben.Characters[Ben.Index].CurrentMotion != motion + '_' + direction)
+                {
+                    Ben.Characters[Ben.Index].CurrentMotion = motion + '_' + direction;
+                    Ben.Characters[Ben.Index].CurrentFrame = 0;
+                }
+                else
+                {
+                    Ben.Characters[Ben.Index].CurrentFrame++;
+                    if (Ben.Characters[Ben.Index].CurrentFrame >= Ben.CurrentFramesCt)
+                    {
+                        Ben.Characters[Ben.Index].CurrentFrame = 0;
+                    }
+                }
             }
         }
 
@@ -680,26 +681,38 @@ namespace Game
 
         private Bitmap BenImg()
         {
-            Bitmap img = Ben.Characters[Ben.Index].Stand_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+            Bitmap img;
             switch (Ben.Characters[Ben.Index].CurrentMotion)
             {
                 case "Stand_Right":
                     img = Ben.Characters[Ben.Index].Stand_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = 0;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Stand_Right_Frames.Count;
                     break;
                 case "Stand_Left":
                     img = Ben.Characters[Ben.Index].Stand_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = 0;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Stand_Left_Frames.Count;
                     break;
                 case "Walk_Right":
                     img = Ben.Characters[Ben.Index].Walk_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].WalkSpeed;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Walk_Right_Frames.Count;
                     break;
                 case "Walk_Left":
                     img = Ben.Characters[Ben.Index].Walk_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].WalkSpeed;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Walk_Left_Frames.Count;
                     break;
                 case "Run_Right":
                     img = Ben.Characters[Ben.Index].Run_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].RunSpeed;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Run_Right_Frames.Count;
                     break;
                 case "Run_Left":
                     img = Ben.Characters[Ben.Index].Run_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].RunSpeed;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Run_Left_Frames.Count;
                     break;
                 case "Jump_Right":
                     img = Ben.Characters[Ben.Index].Jump_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
@@ -742,6 +755,11 @@ namespace Game
                     break;
                 case "Die_Left":
                     img = Ben.Characters[Ben.Index].Die_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    break;
+                default:
+                    img = Ben.Characters[Ben.Index].Stand_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = 0;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Stand_Right_Frames.Count;
                     break;
             }
             return img;
