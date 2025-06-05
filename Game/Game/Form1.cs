@@ -336,6 +336,7 @@ namespace Game
             map.Grass.Add(new Bitmap("Assets/Map_1/Grass.png"));
             map.Trees.Add(new Bitmap("Assets/Map_1/Trees.png"));
             map.Trees.Add(new Bitmap("Assets/Map_1/Trees_2.png"));
+            map.Trees.Add(new Bitmap("Assets/Map_1/Trees_3.png"));
             map.Ground.Add(new Bitmap("Assets/Map_1/Ground.png"));
             DrawMap(map, map.Ground[0].Width, map.Ground[0].Height);
             map.StartX = 0;
