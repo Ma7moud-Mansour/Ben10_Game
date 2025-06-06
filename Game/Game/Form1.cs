@@ -182,6 +182,8 @@ namespace Game
                 {
                     if (GameTimer.Enabled)
                     {
+                        CurrentMenu = 22;
+                        DrawSettingPage();
                         GameTimer.Stop();
                     }
                     else
@@ -245,7 +247,7 @@ namespace Game
                 GameTimer.Interval = 100;
                 GameTimer.Start();
             }
-            else if (CurrentMenu == 2)
+            else if (CurrentMenu == 2 || CurrentMenu == 22 || CurrentMenu == 4 || CurrentMenu == 44)
             {
                 if (y >= 71 * h / 216 && y <= 29 * h / 72)
                 {
@@ -270,7 +272,15 @@ namespace Game
                 }
                 else if (y >= 1 * h / 9 && y <= 17 * h / 108 && x >= 17 * w / 24 && x <= 47 * w / 64)
                 {
-                    CurrentMenu = 0;
+                    if (CurrentMenu == 22)
+                    {
+                        CurrentMenu = -1;
+                        GameTimer.Start();
+                    }
+                    else
+                    {
+                        CurrentMenu = 0;
+                    }
                 }
                 else if (y >= 13 * h / 27 && y <= 119 * h / 216 && x >= 121 * w / 192 && x <= 271 * w / 384)
                 {
@@ -285,7 +295,7 @@ namespace Game
                     PlaySound("Select");
                     DrawSettingPage();
                 }
-                else if (y >= 79 * h / 108 && y <= 23 * h / 27 && x >= 115 * w / 384 && x <= 277 * w / 384)
+                else if ((CurrentMenu == 2 || CurrentMenu == 22) && (y >= 79 * h / 108 && y <= 23 * h / 27 && x >= 115 * w / 384 && x <= 277 * w / 384))
                 {
                     PlaySound("TimeOut");
                     g.DrawImage(new Bitmap("Assets/Menu/Cover.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
@@ -294,7 +304,14 @@ namespace Game
                 }
                 else if (y >= 43 * h / 72 && y <= 155 * h / 215 && x >= 115 * w / 384 && x <= 277 * w / 384)
                 {
-                    CurrentMenu = 4;
+                    if (CurrentMenu == 2)
+                    {
+                        CurrentMenu = 4;
+                    }
+                    else if (CurrentMenu == 22)
+                    {
+                        CurrentMenu = 44;
+                    }
                     PlaySound("Select");
                     g.DrawImage(new Bitmap("Assets/Menu/Credits_Page_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
                 }
@@ -320,19 +337,26 @@ namespace Game
                 System.Threading.Thread.Sleep(3000);
                 this.Close();
             }
-            else if (CurrentMenu == 4)
+            if (CurrentMenu == 4 || CurrentMenu == 44)
             {
                 if (y >= 22 * h / 27 && y <= 69 * h / 72 && x >= 7 * w / 16 && x <= 7 * w / 12)
                 {
                     DrawSettingPage();
-                    CurrentMenu = 2;
+                    if (CurrentMenu == 4)
+                    {
+                        CurrentMenu = 2;
+                    }
+                    else if (CurrentMenu == 44)
+                    {
+                        CurrentMenu = 22;
+                    }
                 }
             }
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (CurrentMenu != -1 && CurrentMenu != 2 && CurrentMenu != -2 && CurrentMenu != 4)
+            if (CurrentMenu != -1 && CurrentMenu != 2 && CurrentMenu != 4 && CurrentMenu != 22 && CurrentMenu != 44)
             {
                 int w = this.ClientSize.Width;
                 int h = this.ClientSize.Height;
@@ -907,23 +931,26 @@ namespace Game
                         break;
                     }
             }
-            if (selectReader.Volume <= 0.0f)
+            if(selectReader != null)
             {
-                selectReader.Volume = 0.0f;
-                g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_Mute_Selected.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-            }
-            else if (selectReader.Volume > 1.0f)
-            {
-                selectReader.Volume = 1.0f;
-            }
-            else
-            {
-                int startX = 895 * w / 1920;
-                int Y = 543 * h / 1080;
-                for (float i = 0.0f; i < selectReader.Volume; i += 0.1f)
+                if (selectReader.Volume <= 0.0f)
                 {
-                    g.DrawImage(new Bitmap("Assets/Menu/Sound_Button.png"), startX, Y, 25 * w / 1920, 30 * h / 1080);
-                    startX += (5 * w / 1920) + (25 * w / 1920);
+                    selectReader.Volume = 0.0f;
+                    g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_Mute_Selected.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                }
+                else if (selectReader.Volume > 1.0f)
+                {
+                    selectReader.Volume = 1.0f;
+                }
+                else
+                {
+                    int startX = 895 * w / 1920;
+                    int Y = 543 * h / 1080;
+                    for (float i = 0.0f; i < selectReader.Volume; i += 0.1f)
+                    {
+                        g.DrawImage(new Bitmap("Assets/Menu/Sound_Button.png"), startX, Y, 25 * w / 1920, 30 * h / 1080);
+                        startX += (5 * w / 1920) + (25 * w / 1920);
+                    }
                 }
             }
         }
