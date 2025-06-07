@@ -747,6 +747,16 @@ namespace Game
 
         private void Gravity()
         {
+            if(Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height < 0 || Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height > Maps[CurrentMap].Ground[0].Height)
+            {
+                int i = Maps[CurrentMap].Ground[0].Height - 1;
+                while (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, i).A != 0)
+                {
+                    i--;
+                }
+                Ben.rDst.Y = i - (Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height) + Maps[CurrentMap].MarginGravity - Ben.CurrentBenImg.Height;
+                return;
+            }
             Color GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
             if(GravityPixel.A == 0)
             {
