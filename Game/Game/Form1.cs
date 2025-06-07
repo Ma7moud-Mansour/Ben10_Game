@@ -707,7 +707,7 @@ namespace Game
                     {
                         if (Ben.rDst.X <= this.ClientSize.Width / 4)
                         {
-                            if (Maps[CurrentMap].rSrc.X - Ben.CurrentSpeed < 0)
+                            if (Maps[CurrentMap].rSrc.X - Ben.CurrentSpeed > 0)
                             {
                                 Maps[CurrentMap].rSrc.X -= Ben.CurrentSpeed;
                                 Ben.rDst.X += Ben.CurrentSpeed;
