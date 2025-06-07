@@ -25,7 +25,8 @@ namespace Game
         public List<Bitmap> Grass = new List<Bitmap>();
         public List<Bitmap> Trees = new List<Bitmap>();
         public List<Bitmap> Ground = new List<Bitmap>();
-        private List<Enemy> Enemies = new List<Enemy>();
+        public List<Enemy> Enemies = new List<Enemy>();
+        public List<int> ScrollingFocus = new List<int>();
         public int MarginGravity = 50;
     }
     public class Character
@@ -73,7 +74,7 @@ namespace Game
         public string Character = "Humungousaur";
         public int Index = 0;
         public List<Character> Characters = new List<Character>();
-        public Bitmap CurrentBenImg;
+        public Bitmap CurrentBenImg = new Bitmap("Assets/Logo.ico");
         public string BenDirection = "Right";
         public string BenMotion = "Stand_Right";
         public int CurrentSpeed;
@@ -450,6 +451,10 @@ namespace Game
             map.StartY = map.img.Height - this.ClientSize.Height;
             map.rDst = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
             map.rSrc = new Rectangle(map.StartX, map.StartY, this.ClientSize.Width, this.ClientSize.Height);
+            map.ScrollingFocus.Add(1000);
+            map.ScrollingFocus.Add(3000);
+            map.ScrollingFocus.Add(4000);
+            map.ScrollingFocus.Add(6000);
             Maps.Add(map);
 
             // Ben10 Characters
@@ -596,7 +601,7 @@ namespace Game
             g.Clear(Color.Black);
         }
 
-        private void Scrolling()
+        private void Scrolling2()
         {
             if (Ben.BenDirection == "Right")
             {
@@ -654,6 +659,81 @@ namespace Game
             //    Maps[CurrentMap].rSrc.X = Maps[CurrentMap].StartX;
             //    Maps[CurrentMap].rDst.X = 0;
             //}
+        }
+
+        private void Scrolling()
+        {
+            int x = Maps[CurrentMap].rSrc.X + Ben.rDst.X;
+            if(Ben.BenDirection == "Right")
+            {
+                for (int i = 0; i + 1 < Maps[CurrentMap].ScrollingFocus.Count; i++)
+                {
+                    if(i % 2 == 0 && x >= Maps[CurrentMap].ScrollingFocus[i] && x <= Maps[CurrentMap].ScrollingFocus[i + 1])
+                    {
+                        if (Ben.rDst.X + Ben.CurrentBenImg.Width >= 3 * this.ClientSize.Width / 4)
+                        {
+                            if(Maps[CurrentMap].rSrc.X + Ben.CurrentSpeed < Maps[CurrentMap].img.Width - this.ClientSize.Width)
+                            {
+                                Maps[CurrentMap].rSrc.X += Ben.CurrentSpeed;
+                                Ben.rDst.X -= Ben.CurrentSpeed;
+                            }
+                        }
+                        return;
+                    }
+                }
+                if (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run" || Ben.BenMotion == "Fly" || Ben.BenMotion == "Jump")
+                {
+                    if (Ben.rDst.X + Ben.CurrentBenImg.Width >= this.ClientSize.Width / 4 && Maps[CurrentMap].rSrc.X + Ben.CurrentSpeed + Ben.Characters[Ben.Index].StandSpeed < Maps[CurrentMap].img.Width - this.ClientSize.Width)
+                    {
+                        Maps[CurrentMap].rSrc.X += Ben.CurrentSpeed + Ben.Characters[Ben.Index].StandSpeed;
+                        Ben.rDst.X -= Ben.CurrentSpeed + Ben.Characters[Ben.Index].StandSpeed;
+                    }
+                    else if (Ben.rDst.X + Ben.CurrentBenImg.Width <= 2 * this.ClientSize.Width / 4 && Maps[CurrentMap].rSrc.X + Ben.CurrentSpeed < Maps[CurrentMap].img.Width - this.ClientSize.Width)
+                    {
+                        Maps[CurrentMap].rSrc.X += Ben.CurrentSpeed;
+                        Ben.rDst.X -= Ben.CurrentSpeed;
+                    }
+                }
+                if (Maps[CurrentMap].rSrc.X > Maps[CurrentMap].img.Width - this.ClientSize.Width)
+                {
+                    Maps[CurrentMap].rSrc.X = Maps[CurrentMap].img.Width - this.ClientSize.Width;
+                }
+            }
+            else if (Ben.BenDirection == "Left")
+            {
+                for (int i = 0; i + 1 < Maps[CurrentMap].ScrollingFocus.Count; i++)
+                {
+                    if (i % 2 == 0 && x >= Maps[CurrentMap].ScrollingFocus[i] && x <= Maps[CurrentMap].ScrollingFocus[i + 1])
+                    {
+                        if (Ben.rDst.X <= this.ClientSize.Width / 4)
+                        {
+                            if (Maps[CurrentMap].rSrc.X - Ben.CurrentSpeed < 0)
+                            {
+                                Maps[CurrentMap].rSrc.X -= Ben.CurrentSpeed;
+                                Ben.rDst.X += Ben.CurrentSpeed;
+                            }
+                        }
+                        return;
+                    }
+                }
+                if (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run" || Ben.BenMotion == "Fly" || Ben.BenMotion == "Jump")
+                {
+                    if (Ben.rDst.X + Ben.CurrentBenImg.Width <= 3 * this.ClientSize.Width / 4 && Maps[CurrentMap].rSrc.X - Ben.CurrentSpeed - Ben.Characters[Ben.Index].StandSpeed > 0)
+                    {
+                        Maps[CurrentMap].rSrc.X -= Ben.CurrentSpeed + Ben.Characters[Ben.Index].StandSpeed;
+                        Ben.rDst.X += Ben.CurrentSpeed + Ben.Characters[Ben.Index].StandSpeed;
+                    }
+                    else if (Ben.rDst.X + Ben.CurrentBenImg.Width <= 3 * this.ClientSize.Width / 4 && Maps[CurrentMap].rSrc.X - Ben.CurrentSpeed > 0)
+                    {
+                        Maps[CurrentMap].rSrc.X -= Ben.CurrentSpeed;
+                        Ben.rDst.X += Ben.CurrentSpeed;
+                    }
+                }
+                if (Maps[CurrentMap].rSrc.X < 0)
+                {
+                    Maps[CurrentMap].rSrc.X = 0;
+                }
+            }
         }
 
         private void BenMotion(string motion, string direction)
@@ -979,6 +1059,21 @@ namespace Game
             g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rDst, Maps[CurrentMap].rSrc, GraphicsUnit.Pixel);
             // Draw Ben10 Character
             g.DrawImage(Ben.CurrentBenImg, Ben.rDst, Ben.rSrc, GraphicsUnit.Pixel);
+            // Scrolling Draft
+            for(int i = 0; i < Maps[CurrentMap].ScrollingFocus.Count; i++)
+            {
+                if(Maps[CurrentMap].ScrollingFocus[i] - Maps[CurrentMap].rSrc.X >= 0)
+                {
+                    if (i % 2 == 0)
+                    {
+                        g.DrawLine(Pens.Green, Maps[CurrentMap].ScrollingFocus[i] - Maps[CurrentMap].rSrc.X, 0, Maps[CurrentMap].ScrollingFocus[i] - Maps[CurrentMap].rSrc.X, this.ClientSize.Height);
+                    }
+                    else
+                    {
+                        g.DrawLine(Pens.Red, Maps[CurrentMap].ScrollingFocus[i] - Maps[CurrentMap].rSrc.X, 0, Maps[CurrentMap].ScrollingFocus[i] - Maps[CurrentMap].rSrc.X, this.ClientSize.Height);
+                    }
+                }
+            }
         }
 
         private void StopSound()
