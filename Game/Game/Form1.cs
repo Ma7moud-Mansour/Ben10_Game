@@ -237,11 +237,12 @@ namespace Game
             Graphics g = this.CreateGraphics();
             if(CurrentMenu == -2)
             {
+                // Init Setting Drawing
                 DrawSettingPage();
-                CurrentMenu = 2;
             }
             if(CurrentMenu == 1)
             {
+                // Start Game
                 g.DrawImage(new Bitmap("Assets/Menu/Cover.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
                 System.Threading.Thread.Sleep(1000);
                 CurrentMenu = -1;
@@ -250,7 +251,25 @@ namespace Game
             }
             else if (CurrentMenu == 2 || CurrentMenu == 22 || CurrentMenu == 4 || CurrentMenu == 44)
             {
-                if (y >= 71 * h / 216 && y <= 29 * h / 72)
+                // Back From Credits To Settings
+                if (CurrentMenu == 4 || CurrentMenu == 44)
+                {
+                    if (y >= 22 * h / 27 && y <= 69 * h / 72 && x >= 7 * w / 16 && x <= 7 * w / 12)
+                    {
+                        if (CurrentMenu == 4)
+                        {
+                            CurrentMenu = 2;
+                        }
+                        else if (CurrentMenu == 44)
+                        {
+                            CurrentMenu = 22;
+                        }
+                        DrawSettingPage();
+                        return;
+                    }
+                }
+                // Defficulty Settings
+                else if (y >= 71 * h / 216 && y <= 29 * h / 72)
                 {
                     if (x >= 179 * w / 384 && x <= 13 * w / 24)
                     {
@@ -271,6 +290,7 @@ namespace Game
                         DrawSettingPage();
                     }
                 }
+                // Cancel Settings
                 else if (y >= 1 * h / 9 && y <= 17 * h / 108 && x >= 17 * w / 24 && x <= 47 * w / 64)
                 {
                     if (CurrentMenu == 22)
@@ -283,6 +303,7 @@ namespace Game
                         CurrentMenu = 0;
                     }
                 }
+                // Mute Audio Settings
                 else if (y >= 13 * h / 27 && y <= 119 * h / 216 && x >= 121 * w / 192 && x <= 271 * w / 384)
                 {
                     if (SoundVolume == 0f)
@@ -296,6 +317,7 @@ namespace Game
                     PlaySound("Select");
                     DrawSettingPage();
                 }
+                // Exit Settings
                 else if ((CurrentMenu == 2 || CurrentMenu == 22) && (y >= 79 * h / 108 && y <= 23 * h / 27 && x >= 115 * w / 384 && x <= 277 * w / 384))
                 {
                     PlaySound("TimeOut");
@@ -303,6 +325,7 @@ namespace Game
                     System.Threading.Thread.Sleep(3000);
                     this.Close();
                 }
+                // Credits Settings
                 else if (y >= 43 * h / 72 && y <= 155 * h / 215 && x >= 115 * w / 384 && x <= 277 * w / 384)
                 {
                     if (CurrentMenu == 2)
@@ -314,8 +337,16 @@ namespace Game
                         CurrentMenu = 44;
                     }
                     PlaySound("Select");
-                    g.DrawImage(new Bitmap("Assets/Menu/Credits_Page_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                    if (CurrentMenu == 4)
+                    {
+                        g.DrawImage(new Bitmap("Assets/Menu/Credits_Page_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                    }
+                    else if (CurrentMenu == 44)
+                    {
+                        g.DrawImage(new Bitmap("Assets/Menu/Credits_NoBg.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                    }
                 }
+                // Audio Volume Settings
                 else if (y >= 543 * h / 1080 && y <= 575 * h / 1080)
                 {
                     int startX = 895 * w / 1920;
@@ -332,26 +363,17 @@ namespace Game
                     }
                 }
             }
+            // Exit Settings
             else if (CurrentMenu == 3)
             {
                 g.DrawImage(new Bitmap("Assets/Menu/Cover.jpg"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
                 System.Threading.Thread.Sleep(3000);
                 this.Close();
             }
-            if (CurrentMenu == 4 || CurrentMenu == 44)
+            if (CurrentMenu == -2)
             {
-                if (y >= 22 * h / 27 && y <= 69 * h / 72 && x >= 7 * w / 16 && x <= 7 * w / 12)
-                {
-                    DrawSettingPage();
-                    if (CurrentMenu == 4)
-                    {
-                        CurrentMenu = 2;
-                    }
-                    else if (CurrentMenu == 44)
-                    {
-                        CurrentMenu = 22;
-                    }
-                }
+                // Init Setting Opening
+                CurrentMenu = 2;
             }
         }
 
@@ -599,66 +621,6 @@ namespace Game
         {
             Graphics g = e.Graphics;
             g.Clear(Color.Black);
-        }
-
-        private void Scrolling2()
-        {
-            if (Ben.BenDirection == "Right")
-            {
-                if(Ben.rDst.X > this.ClientSize.Width / 3 && (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run" || Ben.BenMotion == "Fly" || Ben.BenMotion == "Jump"))
-                {
-                    if (Maps[CurrentMap].rSrc.X < Maps[CurrentMap].img.Width - this.ClientSize.Width)
-                    {
-                        Maps[CurrentMap].rSrc.X += Ben.CurrentSpeed;
-                        if (Ben.rDst.X < 2 * this.ClientSize.Width / 3)
-                        {
-                            Ben.rDst.X -= Ben.CurrentSpeed - Ben.Characters[Ben.Index].StandSpeed;
-                        }
-                        else
-                        {
-                            Ben.rDst.X -= Ben.CurrentSpeed;
-                        }
-                    }
-                    else
-                    {
-                        Maps[CurrentMap].rSrc.X = Maps[CurrentMap].img.Width - this.ClientSize.Width;
-                    }
-                }
-            }
-            else if (Ben.BenDirection == "Left")
-            {
-                if (Ben.rDst.X < 2 * this.ClientSize.Width / 3 && (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run" || Ben.BenMotion == "Fly" || Ben.BenMotion == "Jump"))
-                {
-                    if (Maps[CurrentMap].rSrc.X > 0)
-                    {
-                        Maps[CurrentMap].rSrc.X -= Ben.CurrentSpeed;
-                        if (Ben.rDst.X > this.ClientSize.Width / 3)
-                        {
-                            Ben.rDst.X += Ben.CurrentSpeed + Ben.Characters[Ben.Index].StandSpeed;
-                        }
-                        else
-                        {
-                            Ben.rDst.X += Ben.CurrentSpeed;
-                        }
-                    }
-                    else
-                    {
-                        Maps[CurrentMap].rSrc.X = 0;
-                    }
-                }
-            }
-            //if (Ben.rDst.X + Ben.rDst.Width > this.ClientSize.Width - 100 && Maps[CurrentMap].StartX + Maps[CurrentMap].img.Width > this.ClientSize.Width)
-            //{
-            //    Maps[CurrentMap].StartX -= Ben.Characters[Ben.Index].WalkSpeed;
-            //    Maps[CurrentMap].rSrc.X = Maps[CurrentMap].StartX;
-            //    Maps[CurrentMap].rDst.X = 0;
-            //}
-            //else if (Ben.rDst.X < 100 && Maps[CurrentMap].StartX < 0)
-            //{
-            //    Maps[CurrentMap].StartX += Ben.Characters[Ben.Index].WalkSpeed;
-            //    Maps[CurrentMap].rSrc.X = Maps[CurrentMap].StartX;
-            //    Maps[CurrentMap].rDst.X = 0;
-            //}
         }
 
         private void Scrolling()
@@ -1004,19 +966,43 @@ namespace Game
             {
                 case "Easy":
                     {
-                        g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_E_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        if (CurrentMenu == 2 || CurrentMenu == -2)
+                        {
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_E_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
+                        else if (CurrentMenu == 22)
+                        {
+                            DrawDubb();
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_NoBg_E_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
                         GameTimer.Interval = 100;
                         break;
                     }
                 case "Medium":
                     {
-                        g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_M_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        if (CurrentMenu == 2 || CurrentMenu == -2)
+                        {
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_M_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
+                        else if (CurrentMenu == 22)
+                        {
+                            DrawDubb();
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_NoBg_M_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
                         GameTimer.Interval = 75;
                         break;
                     }
                 case "Hard":
                     {
-                        g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_H_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        if (CurrentMenu == 2 || CurrentMenu == -2)
+                        {
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_H_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
+                        else if (CurrentMenu == 22)
+                        {
+                            DrawDubb();
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_NoBg_H_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
                         GameTimer.Interval = 50;
                         break;
                     }
