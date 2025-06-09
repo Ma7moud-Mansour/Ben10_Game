@@ -71,7 +71,7 @@ namespace Game
     {
         public Rectangle rDst = new Rectangle(50, 820, 0, 0);
         public Rectangle rSrc = new Rectangle();
-        public string Character = "Humungousaur";
+        public string Character = "Ben";
         public int Index = 0;
         public List<Character> Characters = new List<Character>();
         public Bitmap CurrentBenImg = new Bitmap("Assets/Logo.ico");
@@ -871,9 +871,13 @@ namespace Game
                     break;
                 case "Jump_Right":
                     img = Ben.Characters[Ben.Index].Jump_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].JumpSpeed;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Jump_Right_Frames.Count;
                     break;
                 case "Jump_Left":
                     img = Ben.Characters[Ben.Index].Jump_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].JumpSpeed;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Jump_Left_Frames.Count;
                     break;
                 case "Fly_Right":
                     img = Ben.Characters[Ben.Index].Fly_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];

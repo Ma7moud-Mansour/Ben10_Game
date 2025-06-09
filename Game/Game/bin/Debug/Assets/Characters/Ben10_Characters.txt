@@ -1,2 +1,3 @@
 Character_Name,StandS,StandR,StandL,WalkS,WalkR,WalkL,RunS,RunR,RunL,JumpS,JumpR,JumpL,FlyS,FlyR,FlyL,HitS,HitR,HitL,KickS,KickR,KickL,FallS,FallR,FallL,DamageS,DamageR,DamageL,DieS,DieR,DieL
+Ben,20,1,1,10,6,6,20,7,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,0,0,0,0,0,0
 Humungousaur,20,1,1,10,9,9,30,10,10,3,0,0,0,0,0,0,0,0,5,0,0,10,0,0,0,0,0,0,0,0
