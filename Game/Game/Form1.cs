@@ -141,7 +141,7 @@ namespace Game
             {
                 if (e.KeyCode == Keys.Right)
                 {
-                    if(Ben.ReadyMotion != "Run_Right")
+                    if(Ben.Characters[Ben.Index].WalkSpeed != 0 && Ben.ReadyMotion != "Run_Right")
                     {
                         Ben.BenMotion = "Walk";
                         if (Ben.ReadyMotion != "Ready_Run_Right" && Ben.ReadyMotion != "Not_Ready_Run_Right")
@@ -161,7 +161,7 @@ namespace Game
                 }
                 else if (e.KeyCode == Keys.Left)
                 {
-                    if (Ben.ReadyMotion != "Run_Left")
+                    if (Ben.Characters[Ben.Index].WalkSpeed != 0 && Ben.ReadyMotion != "Run_Left")
                     {
                         Ben.BenMotion = "Walk";
                         if (Ben.ReadyMotion != "Ready_Run_Left" && Ben.ReadyMotion != "Not_Ready_Run_Left")
@@ -239,12 +239,17 @@ namespace Game
             }
             if (e.KeyCode == Keys.ShiftKey)
             {
-                if (Ben.Character == "Ben")
+                if (Ben.Index == 0)
                 {
                     Ben.Character = "Humungousaur";
                     Ben.Index = 1;
                 }
-                else
+                else if (Ben.Index == 1)
+                {
+                    Ben.Character = "FourArms";
+                    Ben.Index = 2;
+                }
+                else if (Ben.Index == 2)
                 {
                     Ben.Character = "Ben";
                     Ben.Index = 0;
@@ -871,7 +876,12 @@ namespace Game
             }
             else if (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height - 1).A != 0)
             {
-                int i = Maps[CurrentMap].Ground[0].Height - 1 - this.ClientSize.Height + Ben.rDst.Y + Ben.rDst.Height;
+                //int i = Maps[CurrentMap].Ground[0].Height - 1 - this.ClientSize.Height + Ben.rDst.Y + Ben.rDst.Height;
+                //if (i > Maps[CurrentMap].Ground[0].Height)
+                //{
+                //    i = Maps[CurrentMap].Ground[0].Height - 1;
+                //}
+                int i = Maps[CurrentMap].Ground[0].Height - 1;
                 while (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, i).A != 0)
                 {
                     i--;
