@@ -57,6 +57,9 @@ namespace Game
         public int KickSpeed;
         public List<Bitmap> Kick_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Kick_Left_Frames = new List<Bitmap>();
+        public int FireSpeed;
+        public List<Bitmap> Fire_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Fire_Left_Frames = new List<Bitmap>();
         public int FallSpeed;
         public List<Bitmap> Fall_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Fall_Left_Frames = new List<Bitmap>();
@@ -250,6 +253,11 @@ namespace Game
                     Ben.Index = 2;
                 }
                 else if (Ben.Index == 2)
+                {
+                    Ben.Character = "HeatBlast";
+                    Ben.Index = 3;
+                }
+                else if (Ben.Index == 3)
                 {
                     Ben.Character = "Ben";
                     Ben.Index = 0;
@@ -518,7 +526,7 @@ namespace Game
                 line = SR.ReadLine();
                 string[] temp = line.Split(',');
                 int iTemp = 0;
-                if(temp.Count() >= 0 && temp.Count() <= 31)
+                if(temp.Count() >= 0 && temp.Count() <= 34)
                 {
                     Character pnn = new Character();
                     pnn.Name = temp[iTemp++];
@@ -597,6 +605,17 @@ namespace Game
                     for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Kick_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Kick_Left/" + pnn.Name + "_Kick_Left_Frame_" + (i + 1) + ".png"));
+                    }
+                    iTemp++;
+                    pnn.FireSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
+                    {
+                        pnn.Fire_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fire_Right/" + pnn.Name + "_Fire_Right_Frame_" + (i + 1) + ".png"));
+                    }
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
+                    {
+                        pnn.Fire_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Fire_Left/" + pnn.Name + "_Fire_Left_Frame_" + (i + 1) + ".png"));
                     }
                     iTemp++;
                     pnn.FallSpeed = int.Parse(temp[iTemp++]);
