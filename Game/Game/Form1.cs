@@ -179,6 +179,14 @@ namespace Game
                     }
                     Ben.BenDirection = "Left";
                 }
+                else if (e.KeyCode == Keys.Up)
+                {
+                    if (Ben.Characters[Ben.Index].JumpSpeed > 0)
+                    {
+                        Ben.BenMotion = "Jump";
+                        Ben.BenAcessMove = false;
+                    }
+                }
                 else if (e.KeyCode == Keys.Escape && !IntroTimer.Enabled)
                 {
                     if (GameTimer.Enabled)
@@ -225,7 +233,23 @@ namespace Game
             {
                 Ben.ReadyMotion = "Not_Ready";
             }
-            Ben.BenMotion = "Stand";
+            if (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run")
+            {
+                Ben.BenMotion = "Stand";
+            }
+            if (e.KeyCode == Keys.ShiftKey)
+            {
+                if (Ben.Character == "Ben")
+                {
+                    Ben.Character = "Humungousaur";
+                    Ben.Index = 1;
+                }
+                else
+                {
+                    Ben.Character = "Ben";
+                    Ben.Index = 0;
+                }
+            }
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -730,6 +754,22 @@ namespace Game
                                     }
                                     break;
                                 }
+                            case "Jump":
+                                {
+                                    if (Ben.rDst.X + Ben.rDst.Width < this.ClientSize.Width)
+                                    {
+                                        Ben.rDst.X += Ben.Characters[Ben.Index].JumpSpeed;
+                                        if(Ben.Characters[Ben.Index].CurrentFrame <= Ben.CurrentFramesCt / 2)
+                                        {
+                                            Ben.rDst.Y -= Ben.Characters[Ben.Index].JumpSpeed;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
+                                    }
+                                    break;
+                                }
                         }
                         break;
                     }
@@ -761,6 +801,22 @@ namespace Game
                                     }
                                     break;
                                 }
+                            case "Jump":
+                                {
+                                    if (Ben.rDst.X > 0)
+                                    {
+                                        Ben.rDst.X -= Ben.Characters[Ben.Index].JumpSpeed;
+                                        if (Ben.Characters[Ben.Index].CurrentFrame <= Ben.CurrentFramesCt / 2)
+                                        {
+                                            Ben.rDst.Y -= Ben.Characters[Ben.Index].JumpSpeed;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Ben.rDst.X = 0;
+                                    }
+                                    break;
+                                }
                         }
                         break;
                     }
@@ -782,6 +838,11 @@ namespace Game
                     if (Ben.Characters[Ben.Index].CurrentFrame >= Ben.CurrentFramesCt)
                     {
                         Ben.Characters[Ben.Index].CurrentFrame = 0;
+                        if (Ben.BenMotion == "Jump")
+                        {
+                            Ben.BenMotion = "Stand";
+                            Ben.BenAcessMove = true;
+                        }
                     }
                 }
             }
@@ -789,7 +850,7 @@ namespace Game
 
         private void Gravity()
         {
-            if(Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height < 0 || Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height > Maps[CurrentMap].Ground[0].Height)
+            if(Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height < 0 || Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height >= Maps[CurrentMap].Ground[0].Height)
             {
                 int i = Maps[CurrentMap].Ground[0].Height - 1;
                 while (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, i).A != 0)
@@ -804,22 +865,7 @@ namespace Game
             {
                 for (int i = 0; GravityPixel.A == 0 && i < Ben.Characters[Ben.Index].FallSpeed; i++)
                 {
-                    if (Ben.Characters[Ben.Index].CurrentMotion == "Jump_Right" || Ben.Characters[Ben.Index].CurrentMotion == "Jump_Left" || Ben.Characters[Ben.Index].CurrentMotion == "Fly_Right" || Ben.Characters[Ben.Index].CurrentMotion == "Fly_Left")
-                    {
-                        //if (Ben.rDst.Y + Ben.rDst.Height < this.ClientSize.Height - Maps[CurrentMap].MarginGravity)
-                        //{
-                        //    Ben.rDst.Y += 5; // Gravity effect
-                        //}
-                        //else
-                        //{
-                        //    Ben.rDst.Y = this.ClientSize.Height - Maps[CurrentMap].MarginGravity - Ben.rDst.Height;
-                        //    Ben.Characters[Ben.Index].CurrentMotion = "Stand_Right"; // Reset to standing motion
-                        //}
-                    }
-                    else
-                    {
-                        Ben.rDst.Y++; // Gravity effect
-                    }
+                    Ben.rDst.Y++;
                     GravityPixel = Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height);
                 }
             }
