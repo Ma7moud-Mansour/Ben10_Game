@@ -871,7 +871,7 @@ namespace Game
             }
             else if (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height - 1).A != 0)
             {
-                int i = Maps[CurrentMap].Ground[0].Height - 1;
+                int i = Maps[CurrentMap].Ground[0].Height - 1 - this.ClientSize.Height + Ben.rDst.Y + Ben.rDst.Height;
                 while (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, i).A != 0)
                 {
                     i--;
