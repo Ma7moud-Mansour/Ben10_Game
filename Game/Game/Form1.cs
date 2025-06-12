@@ -259,6 +259,11 @@ namespace Game
                 }
                 else if (Ben.Index == 3)
                 {
+                    Ben.Character = "Upgrade";
+                    Ben.Index = 4;
+                }
+                else if (Ben.Index == 4)
+                {
                     Ben.Character = "Ben";
                     Ben.Index = 0;
                 }
