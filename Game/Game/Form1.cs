@@ -144,7 +144,7 @@ namespace Game
             {
                 if (e.KeyCode == Keys.Right)
                 {
-                    if(Ben.Characters[Ben.Index].WalkSpeed != 0 && Ben.ReadyMotion != "Run_Right")
+                    if (Ben.Characters[Ben.Index].WalkSpeed != 0 && Ben.ReadyMotion != "Run_Right")
                     {
                         Ben.BenMotion = "Walk";
                         if (Ben.ReadyMotion != "Ready_Run_Right" && Ben.ReadyMotion != "Not_Ready_Run_Right")
@@ -156,9 +156,13 @@ namespace Game
                             Ben.ReadyMotion = "Not_Ready_Run_Right";
                         }
                     }
-                    else
+                    else if (Ben.Characters[Ben.Index].RunSpeed != 0)
                     {
                         Ben.BenMotion = "Run";
+                    }
+                    else if (Ben.Characters[Ben.Index].WalkSpeed != 0)
+                    {
+                        Ben.BenMotion = "Walk";
                     }
                     Ben.BenDirection = "Right";
                 }
@@ -176,9 +180,13 @@ namespace Game
                             Ben.ReadyMotion = "Not_Ready_Run_Left";
                         }
                     }
-                    else
+                    else if (Ben.Characters[Ben.Index].RunSpeed != 0)
                     {
                         Ben.BenMotion = "Run";
+                    }
+                    else if (Ben.Characters[Ben.Index].WalkSpeed != 0)
+                    {
+                        Ben.BenMotion = "Walk";
                     }
                     Ben.BenDirection = "Left";
                 }
@@ -263,6 +271,11 @@ namespace Game
                     Ben.Index = 4;
                 }
                 else if (Ben.Index == 4)
+                {
+                    Ben.Character = "Ripjaws";
+                    Ben.Index = 5;
+                }
+                else if (Ben.Index == 5)
                 {
                     Ben.Character = "Ben";
                     Ben.Index = 0;
