@@ -287,9 +287,15 @@ namespace Game
                 }
                 else if (Ben.Index == 7)
                 {
+                    Ben.Character = "StinkFly";
+                    Ben.Index = 8;
+                }
+                else if (Ben.Index == 8)
+                {
                     Ben.Character = "Ben";
                     Ben.Index = 0;
                 }
+                Ben.Characters[Ben.Index].CurrentFrame = 0;
             }
         }
 
