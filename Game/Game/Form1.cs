@@ -248,7 +248,7 @@ namespace Game
             {
                 Ben.BenMotion = "Stand";
             }
-            if (e.KeyCode == Keys.ShiftKey)
+            if (e.KeyCode == Keys.Tab)
             {
                 if (Ben.Index == 0)
                 {
@@ -276,6 +276,11 @@ namespace Game
                     Ben.Index = 5;
                 }
                 else if (Ben.Index == 5)
+                {
+                    Ben.Character = "DiamondHead";
+                    Ben.Index = 6;
+                }
+                else if (Ben.Index == 6)
                 {
                     Ben.Character = "Ben";
                     Ben.Index = 0;
