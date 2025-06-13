@@ -89,6 +89,8 @@ namespace Game
         public bool BenAcessMove = true;
         public bool SelectingAlien = false;
         public string ReadyMotion = "Not_Ready";
+        public int Health = 100;
+        public int PowerConvert = 100;
     }
     public class Enemy : Character
     {
@@ -1239,6 +1241,16 @@ namespace Game
             {
                 g2.DrawImage(new Bitmap("Assets/Menu/Black_BG.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
                 g2.DrawImage(new Bitmap("Assets/Menu/Aliens_Selector_" + Ben.Characters[Ben.SelectedAlien].Name + ".png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            }
+            else
+            {
+                g2.DrawImage(new Bitmap("Assets/Characters/Ben/Ben.png"), 0, 0, 100, 150);
+                g2.FillRectangle(Brushes.Black, 100, 60, 510, 40);
+                g2.FillRectangle(Brushes.White, 105, 65, 500, 30);
+                g2.FillRectangle(Brushes.OrangeRed, 105, 65, Ben.Health * 5, 30);
+                g2.FillRectangle(Brushes.Black, 100, 105, 510, 40);
+                g2.FillRectangle(Brushes.White, 105, 110, 500, 30);
+                g2.FillRectangle(Brushes.Green, 105, 110, Ben.PowerConvert * 5, 30);
             }
             g.DrawImage(off, 0, 0);
         }
