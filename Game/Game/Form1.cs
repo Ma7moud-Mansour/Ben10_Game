@@ -429,11 +429,11 @@ namespace Game
                     PlaySound("Select");
                     if (CurrentMenu == 4)
                     {
-                        g.DrawImage(new Bitmap("Assets/Menu/Credits_Page_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        DrawDubb(new Bitmap("Assets/Menu/Credits_Page_Hover.png"));
                     }
                     else if (CurrentMenu == 44)
                     {
-                        g.DrawImage(new Bitmap("Assets/Menu/Credits_NoBg.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        DrawDubb(new Bitmap("Assets/Menu/Credits_NoBg.png"));
                     }
                 }
                 // Audio Volume Settings
@@ -1151,20 +1151,40 @@ namespace Game
             {
                 case "Easy":
                     {
-
-                        DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_E_Hover.png"));
+                        if (CurrentMenu == 2 || CurrentMenu == -2)
+                        {
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_E_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
+                        else if (CurrentMenu == 22)
+                        {
+                            DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_E_Hover.png"));
+                        }
                         GameTimer.Interval = 100;
                         break;
                     }
                 case "Medium":
                     {
-                        DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_M_Hover.png"));
+                        if (CurrentMenu == 2 || CurrentMenu == -2)
+                        {
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_M_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
+                        else if (CurrentMenu == 22)
+                        {
+                            DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_M_Hover.png"));
+                        }
                         GameTimer.Interval = 75;
                         break;
                     }
                 case "Hard":
                     {
-                        DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_H_Hover.png"));
+                        if (CurrentMenu == 2 || CurrentMenu == -2)
+                        {
+                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_H_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                        }
+                        else if (CurrentMenu == 22)
+                        {
+                            DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_H_Hover.png"));
+                        }
                         GameTimer.Interval = 50;
                         break;
                     }
