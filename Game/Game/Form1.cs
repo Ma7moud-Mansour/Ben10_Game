@@ -164,6 +164,10 @@ namespace Game
                     {
                         Ben.BenMotion = "Walk";
                     }
+                    else if (Ben.Characters[Ben.Index].FlySpeed != 0)
+                    {
+                        Ben.BenMotion = "Fly";
+                    }
                     Ben.BenDirection = "Right";
                 }
                 else if (e.KeyCode == Keys.Left)
@@ -188,6 +192,10 @@ namespace Game
                     {
                         Ben.BenMotion = "Walk";
                     }
+                    else if (Ben.Characters[Ben.Index].FlySpeed != 0)
+                    {
+                        Ben.BenMotion = "Fly";
+                    }
                     Ben.BenDirection = "Left";
                 }
                 else if (e.KeyCode == Keys.Up)
@@ -196,6 +204,17 @@ namespace Game
                     {
                         Ben.BenMotion = "Jump";
                         Ben.BenAcessMove = false;
+                    }
+                    else if (Ben.Characters[Ben.Index].FlySpeed != 0)
+                    {
+                        Ben.ReadyMotion = "Up";
+                    }
+                }
+                else if (e.KeyCode == Keys.Down)
+                {
+                    if (Ben.Characters[Ben.Index].FlySpeed != 0)
+                    {
+                        Ben.ReadyMotion = "Down";
                     }
                 }
                 else if (e.KeyCode == Keys.Escape && !IntroTimer.Enabled)
@@ -215,7 +234,7 @@ namespace Game
                 else if (e.KeyCode == Keys.Space)
                 {
                     Space = true;
-                    if(IntroTimer.Enabled)
+                    if (IntroTimer.Enabled)
                     {
                         CurrentMenu = 0;
                     }
@@ -244,7 +263,7 @@ namespace Game
             {
                 Ben.ReadyMotion = "Not_Ready";
             }
-            if (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run")
+            if (Ben.BenMotion == "Walk" || Ben.BenMotion == "Run" || Ben.BenMotion == "Fly")
             {
                 Ben.BenMotion = "Stand";
             }
@@ -828,6 +847,18 @@ namespace Game
                                     }
                                     break;
                                 }
+                            case "Fly":
+                                {
+                                    if (Ben.rDst.X + Ben.rDst.Width < this.ClientSize.Width)
+                                    {
+                                        Ben.rDst.X += Ben.Characters[Ben.Index].FlySpeed;
+                                    }
+                                    else
+                                    {
+                                        Ben.rDst.X = this.ClientSize.Width - Ben.rDst.Width;
+                                    }
+                                    break;
+                                }
                         }
                         break;
                     }
@@ -837,7 +868,7 @@ namespace Game
                         {
                             case "Walk":
                                 {
-                                    if (Ben.rDst.X > 0)
+                                    if (Ben.rDst.X - Ben.Characters[Ben.Index].WalkSpeed >= 0)
                                     {
                                         Ben.rDst.X -= Ben.Characters[Ben.Index].WalkSpeed;
                                     }
@@ -849,7 +880,7 @@ namespace Game
                                 }
                             case "Run":
                                 {
-                                    if (Ben.rDst.X > 0)
+                                    if (Ben.rDst.X - Ben.Characters[Ben.Index].RunSpeed >= 0)
                                     {
                                         Ben.rDst.X -= Ben.Characters[Ben.Index].RunSpeed;
                                     }
@@ -861,7 +892,7 @@ namespace Game
                                 }
                             case "Jump":
                                 {
-                                    if (Ben.rDst.X > 0)
+                                    if (Ben.rDst.X - Ben.Characters[Ben.Index].JumpSpeed >= 0)
                                     {
                                         Ben.rDst.X -= Ben.Characters[Ben.Index].JumpSpeed;
                                         if (Ben.Characters[Ben.Index].CurrentFrame <= Ben.CurrentFramesCt / 2)
@@ -875,9 +906,46 @@ namespace Game
                                     }
                                     break;
                                 }
+                            case "Fly":
+                                {
+                                    if (Ben.rDst.X - Ben.Characters[Ben.Index].FlySpeed >= 0)
+                                    {
+                                        Ben.rDst.X -= Ben.Characters[Ben.Index].FlySpeed;
+                                    }
+                                    else
+                                    {
+                                        Ben.rDst.X = 0;
+                                    }
+                                    break;
+                                }
                         }
                         break;
                     }
+            }
+            if (Ben.Characters[Ben.Index].FlySpeed != 0)
+            {
+                if (Ben.ReadyMotion == "Up")
+                {
+                    if (Ben.rDst.Y - Ben.Characters[Ben.Index].FlySpeed > Maps[CurrentMap].MarginGravity)
+                    {
+                        Ben.rDst.Y -= Ben.Characters[Ben.Index].FlySpeed;
+                    }
+                    else
+                    {
+                        Ben.rDst.Y = Maps[CurrentMap].MarginGravity;
+                    }
+                }
+                else if (Ben.ReadyMotion == "Down")
+                {
+                    if (Ben.rDst.Y + Ben.rDst.Height + Ben.Characters[Ben.Index].FlySpeed + Maps[CurrentMap].MarginGravity < this.ClientSize.Height)
+                    {
+                        Ben.rDst.Y += Ben.Characters[Ben.Index].FlySpeed;
+                    }
+                    else
+                    {
+                        Ben.rDst.Y = this.ClientSize.Height - Maps[CurrentMap].MarginGravity - Ben.rDst.Height;
+                    }
+                }
             }
         }
 
@@ -990,9 +1058,13 @@ namespace Game
                     break;
                 case "Fly_Right":
                     img = Ben.Characters[Ben.Index].Fly_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].FlySpeed;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Fly_Right_Frames.Count;
                     break;
                 case "Fly_Left":
                     img = Ben.Characters[Ben.Index].Fly_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = Ben.Characters[Ben.Index].FlySpeed;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Fly_Left_Frames.Count;
                     break;
                 case "Hit_Right":
                     img = Ben.Characters[Ben.Index].Hit_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
