@@ -89,8 +89,8 @@ namespace Game
         public bool BenAcessMove = true;
         public bool SelectingAlien = false;
         public string ReadyMotion = "Not_Ready";
-        public int Health = 100;
-        public int PowerConvert = 100;
+        public float Health = 100;
+        public float PowerConvert = 100;
     }
     public class Enemy : Character
     {
@@ -142,6 +142,7 @@ namespace Game
             Scrolling();
             Ben.CurrentBenImg = BenImg();
             ManageBenRectanglesTheme();
+            BenPowerConvert();
             DrawDubb();
         }
 
@@ -725,6 +726,64 @@ namespace Game
         {
             Graphics g = e.Graphics;
             g.Clear(Color.Black);
+        }
+
+        private void BenPowerConvert()
+        {
+            if (Ben.Index == 0 && Ben.PowerConvert < 100)
+            {
+                Ben.PowerConvert += 0.5f;
+            }
+            else if (Ben.Index != 0)
+            {
+                Ben.PowerConvert -= 0.1f;
+                if (Ben.BenMotion == "Walk")
+                {
+                    Ben.PowerConvert -= 0.1f;
+                }
+                else if (Ben.BenMotion == "Run")
+                {
+                    Ben.PowerConvert -= 0.2f;
+                }
+                else if (Ben.BenMotion == "Jump")
+                {
+                    Ben.PowerConvert -= 0.3f;
+                }
+                else if (Ben.BenMotion == "Fly")
+                {
+                    Ben.PowerConvert -= 0.4f;
+                }
+                else if (Ben.BenMotion == "Hit")
+                {
+                    Ben.PowerConvert -= 0.5f;
+                }
+                else if (Ben.BenMotion == "Kick")
+                {
+                    Ben.PowerConvert -= 0.6f;
+                }
+                else if (Ben.BenMotion == "Fire")
+                {
+                    Ben.PowerConvert -= 0.7f;
+                }
+                else if (Ben.BenMotion == "Fall")
+                {
+                    Ben.PowerConvert -= 0.8f;
+                }
+                else if (Ben.BenMotion == "Damage")
+                {
+                    Ben.PowerConvert -= 0.9f;
+                }
+                if (Ben.PowerConvert < 0)
+                {
+                    PlaySound("TimeOut");
+                    Ben.PowerConvert = 0;
+                    Ben.Index = 0;
+                    Ben.Character = Ben.Characters[Ben.Index].Name;
+                    Ben.Characters[Ben.Index].CurrentFrame = 0;
+                    Ben.BenMotion = "Convert";
+                    Ben.BenAcessMove = true;
+                }
+            }
         }
 
         private void Scrolling()
