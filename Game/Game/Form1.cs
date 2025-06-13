@@ -36,6 +36,9 @@ namespace Game
         public int Height;
         public string CurrentMotion = "Stand_Right";
         public int CurrentFrame = 0;
+        public int ConvertSpeed;
+        public List<Bitmap> Convert_Right_Frames = new List<Bitmap>();
+        public List<Bitmap> Convert_Left_Frames = new List<Bitmap>();
         public int StandSpeed;
         public List<Bitmap> Stand_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Stand_Left_Frames = new List<Bitmap>();
@@ -82,7 +85,9 @@ namespace Game
         public string BenMotion = "Stand_Right";
         public int CurrentSpeed;
         public int CurrentFramesCt;
+        public int SelectedAlien = 0;
         public bool BenAcessMove = true;
+        public bool SelectingAlien = false;
         public string ReadyMotion = "Not_Ready";
     }
     public class Enemy : Character
@@ -142,82 +147,85 @@ namespace Game
         {
             if(Ben.BenAcessMove)
             {
-                if (e.KeyCode == Keys.Right)
+                if (GameTimer.Enabled && !Ben.SelectingAlien)
                 {
-                    if (Ben.Characters[Ben.Index].WalkSpeed != 0 && Ben.ReadyMotion != "Run_Right")
+                    if (e.KeyCode == Keys.Right)
                     {
-                        Ben.BenMotion = "Walk";
-                        if (Ben.ReadyMotion != "Ready_Run_Right" && Ben.ReadyMotion != "Not_Ready_Run_Right")
+                        if (Ben.Characters[Ben.Index].WalkSpeed != 0 && Ben.ReadyMotion != "Run_Right")
                         {
-                            Ben.ReadyMotion = "Ready_Run_Right";
+                            Ben.BenMotion = "Walk";
+                            if (Ben.ReadyMotion != "Ready_Run_Right" && Ben.ReadyMotion != "Not_Ready_Run_Right")
+                            {
+                                Ben.ReadyMotion = "Ready_Run_Right";
+                            }
+                            else
+                            {
+                                Ben.ReadyMotion = "Not_Ready_Run_Right";
+                            }
                         }
-                        else
+                        else if (Ben.Characters[Ben.Index].RunSpeed != 0)
                         {
-                            Ben.ReadyMotion = "Not_Ready_Run_Right";
+                            Ben.BenMotion = "Run";
                         }
-                    }
-                    else if (Ben.Characters[Ben.Index].RunSpeed != 0)
-                    {
-                        Ben.BenMotion = "Run";
-                    }
-                    else if (Ben.Characters[Ben.Index].WalkSpeed != 0)
-                    {
-                        Ben.BenMotion = "Walk";
-                    }
-                    else if (Ben.Characters[Ben.Index].FlySpeed != 0)
-                    {
-                        Ben.BenMotion = "Fly";
-                    }
-                    Ben.BenDirection = "Right";
-                }
-                else if (e.KeyCode == Keys.Left)
-                {
-                    if (Ben.Characters[Ben.Index].WalkSpeed != 0 && Ben.ReadyMotion != "Run_Left")
-                    {
-                        Ben.BenMotion = "Walk";
-                        if (Ben.ReadyMotion != "Ready_Run_Left" && Ben.ReadyMotion != "Not_Ready_Run_Left")
+                        else if (Ben.Characters[Ben.Index].WalkSpeed != 0)
                         {
-                            Ben.ReadyMotion = "Ready_Run_Left";
+                            Ben.BenMotion = "Walk";
                         }
-                        else
+                        else if (Ben.Characters[Ben.Index].FlySpeed != 0)
                         {
-                            Ben.ReadyMotion = "Not_Ready_Run_Left";
+                            Ben.BenMotion = "Fly";
+                        }
+                        Ben.BenDirection = "Right";
+                    }
+                    else if (e.KeyCode == Keys.Left)
+                    {
+                        if (Ben.Characters[Ben.Index].WalkSpeed != 0 && Ben.ReadyMotion != "Run_Left")
+                        {
+                            Ben.BenMotion = "Walk";
+                            if (Ben.ReadyMotion != "Ready_Run_Left" && Ben.ReadyMotion != "Not_Ready_Run_Left")
+                            {
+                                Ben.ReadyMotion = "Ready_Run_Left";
+                            }
+                            else
+                            {
+                                Ben.ReadyMotion = "Not_Ready_Run_Left";
+                            }
+                        }
+                        else if (Ben.Characters[Ben.Index].RunSpeed != 0)
+                        {
+                            Ben.BenMotion = "Run";
+                        }
+                        else if (Ben.Characters[Ben.Index].WalkSpeed != 0)
+                        {
+                            Ben.BenMotion = "Walk";
+                        }
+                        else if (Ben.Characters[Ben.Index].FlySpeed != 0)
+                        {
+                            Ben.BenMotion = "Fly";
+                        }
+                        Ben.BenDirection = "Left";
+                    }
+                    else if (e.KeyCode == Keys.Up)
+                    {
+                        if (Ben.Characters[Ben.Index].JumpSpeed > 0)
+                        {
+                            Ben.BenMotion = "Jump";
+                            Ben.BenAcessMove = false;
+                        }
+                        else if (Ben.Characters[Ben.Index].FlySpeed != 0)
+                        {
+                            Ben.ReadyMotion = "Up";
                         }
                     }
-                    else if (Ben.Characters[Ben.Index].RunSpeed != 0)
+                    else if (e.KeyCode == Keys.Down)
                     {
-                        Ben.BenMotion = "Run";
-                    }
-                    else if (Ben.Characters[Ben.Index].WalkSpeed != 0)
-                    {
-                        Ben.BenMotion = "Walk";
-                    }
-                    else if (Ben.Characters[Ben.Index].FlySpeed != 0)
-                    {
-                        Ben.BenMotion = "Fly";
-                    }
-                    Ben.BenDirection = "Left";
-                }
-                else if (e.KeyCode == Keys.Up)
-                {
-                    if (Ben.Characters[Ben.Index].JumpSpeed > 0)
-                    {
-                        Ben.BenMotion = "Jump";
-                        Ben.BenAcessMove = false;
-                    }
-                    else if (Ben.Characters[Ben.Index].FlySpeed != 0)
-                    {
-                        Ben.ReadyMotion = "Up";
+                        if (Ben.Characters[Ben.Index].FlySpeed != 0)
+                        {
+                            Ben.ReadyMotion = "Down";
+                        }
                     }
                 }
-                else if (e.KeyCode == Keys.Down)
-                {
-                    if (Ben.Characters[Ben.Index].FlySpeed != 0)
-                    {
-                        Ben.ReadyMotion = "Down";
-                    }
-                }
-                else if (e.KeyCode == Keys.Escape && !IntroTimer.Enabled)
+                if (e.KeyCode == Keys.Escape && !IntroTimer.Enabled)
                 {
                     if (GameTimer.Enabled)
                     {
@@ -238,6 +246,28 @@ namespace Game
                     {
                         CurrentMenu = 0;
                     }
+                }
+                if (e.Alt)
+                {
+                    if(e.KeyCode == Keys.Right)
+                    {
+                        Ben.SelectedAlien++;
+                        if(Ben.SelectedAlien > Ben.Characters.Count - 1)
+                        {
+                            Ben.SelectedAlien = 0;
+                        }
+                        PlaySound("Select");
+                    }
+                    else if (e.KeyCode == Keys.Left)
+                    {
+                        Ben.SelectedAlien--;
+                        if (Ben.SelectedAlien < 0)
+                        {
+                            Ben.SelectedAlien = Ben.Characters.Count - 1;
+                        }
+                        PlaySound("Select");
+                    }
+                    Ben.SelectingAlien = true;
                 }
             }
         }
@@ -267,54 +297,14 @@ namespace Game
             {
                 Ben.BenMotion = "Stand";
             }
-            if (e.KeyCode == Keys.Tab)
+            if (e.KeyCode == Keys.Menu && GameTimer.Enabled)
             {
-                if (Ben.Index == 0)
-                {
-                    Ben.Character = "Humungousaur";
-                    Ben.Index = 1;
-                }
-                else if (Ben.Index == 1)
-                {
-                    Ben.Character = "FourArms";
-                    Ben.Index = 2;
-                }
-                else if (Ben.Index == 2)
-                {
-                    Ben.Character = "HeatBlast";
-                    Ben.Index = 3;
-                }
-                else if (Ben.Index == 3)
-                {
-                    Ben.Character = "Upgrade";
-                    Ben.Index = 4;
-                }
-                else if (Ben.Index == 4)
-                {
-                    Ben.Character = "Ripjaws";
-                    Ben.Index = 5;
-                }
-                else if (Ben.Index == 5)
-                {
-                    Ben.Character = "DiamondHead";
-                    Ben.Index = 6;
-                }
-                else if (Ben.Index == 6)
-                {
-                    Ben.Character = "WildMutt";
-                    Ben.Index = 7;
-                }
-                else if (Ben.Index == 7)
-                {
-                    Ben.Character = "StinkFly";
-                    Ben.Index = 8;
-                }
-                else if (Ben.Index == 8)
-                {
-                    Ben.Character = "Ben";
-                    Ben.Index = 0;
-                }
+                PlaySound("Convert");
+                Ben.Index = Ben.SelectedAlien;
+                Ben.Character = Ben.Characters[Ben.SelectedAlien].Name;
                 Ben.Characters[Ben.Index].CurrentFrame = 0;
+                Ben.BenMotion = "Convert";
+                Ben.SelectingAlien = false;
             }
         }
 
@@ -579,10 +569,21 @@ namespace Game
                 line = SR.ReadLine();
                 string[] temp = line.Split(',');
                 int iTemp = 0;
-                if(temp.Count() >= 0 && temp.Count() <= 34)
+                if(temp.Count() >= 0 && temp.Count() <= 37)
                 {
                     Character pnn = new Character();
                     pnn.Name = temp[iTemp++];
+                    pnn.ConvertSpeed = int.Parse(temp[iTemp++]);
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
+                    {
+                        pnn.Convert_Right_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Convert_Right/" + pnn.Name + "_Convert_Right_Frame_" + (i + 1) + ".png"));
+                    }
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
+                    {
+                        pnn.Convert_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Convert_Left/" + pnn.Name + "_Convert_Left_Frame_" + (i + 1) + ".png"));
+                    }
+                    iTemp++;
                     pnn.StandSpeed = int.Parse(temp[iTemp++]);
                     for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
@@ -1016,6 +1017,18 @@ namespace Game
             Bitmap img;
             switch (Ben.Characters[Ben.Index].CurrentMotion)
             {
+                case "Convert_Right":
+                    img = Ben.Characters[Ben.Index].Convert_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = 0;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Convert_Right_Frames.Count;
+                    Ben.BenMotion = "Stand";
+                    break;
+                case "Convert_Left":
+                    img = Ben.Characters[Ben.Index].Convert_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentSpeed = 0;
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Convert_Left_Frames.Count;
+                    Ben.BenMotion = "Stand";
+                    break;
                 case "Stand_Right":
                     img = Ben.Characters[Ben.Index].Stand_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
                     Ben.CurrentSpeed = 0;
@@ -1213,20 +1226,20 @@ namespace Game
             }
         }
 
-        private void DrawDubb()
+        private void DrawDubb(Bitmap pop = null)
         {
             Graphics g2 = Graphics.FromImage(off);
             Graphics g = this.CreateGraphics();
             DrawScene(g2);
-            g.DrawImage(off, 0, 0);
-        }
-
-        private void DrawDubb(Bitmap pop)
-        {
-            Graphics g2 = Graphics.FromImage(off);
-            Graphics g = this.CreateGraphics();
-            DrawScene(g2);
-            g2.DrawImage(pop, 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            if (pop != null)
+            {
+                g2.DrawImage(pop, 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            }
+            if (Ben.SelectingAlien)
+            {
+                g2.DrawImage(new Bitmap("Assets/Menu/Black_BG.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+                g2.DrawImage(new Bitmap("Assets/Menu/Aliens_Selector_" + Ben.Characters[Ben.SelectedAlien].Name + ".png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            }
             g.DrawImage(off, 0, 0);
         }
 
@@ -1278,7 +1291,11 @@ namespace Game
                 case "TimeOut":
                     selectReader = new AudioFileReader("Assets/Audio/TimeOut.wav");
                     break;
+                case "Convert":
+                    selectReader = new AudioFileReader("Assets/Audio/Convert.mp3");
+                    break;
                 default:
+                    selectReader = new AudioFileReader("Assets/Audio/OmtrixSelect.wav");
                     break;
             }
             selectReader.Volume = SoundVolume;
