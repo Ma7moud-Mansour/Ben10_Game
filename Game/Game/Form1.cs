@@ -1151,43 +1151,20 @@ namespace Game
             {
                 case "Easy":
                     {
-                        if (CurrentMenu == 2 || CurrentMenu == -2)
-                        {
-                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_E_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                        }
-                        else if (CurrentMenu == 22)
-                        {
-                            DrawDubb();
-                            g.DrawImage(new Bitmap("Assets/Menu/Setting_NoBg_E_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                        }
+
+                        DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_E_Hover.png"));
                         GameTimer.Interval = 100;
                         break;
                     }
                 case "Medium":
                     {
-                        if (CurrentMenu == 2 || CurrentMenu == -2)
-                        {
-                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_M_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                        }
-                        else if (CurrentMenu == 22)
-                        {
-                            DrawDubb();
-                            g.DrawImage(new Bitmap("Assets/Menu/Setting_NoBg_M_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                        }
+                        DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_M_Hover.png"));
                         GameTimer.Interval = 75;
                         break;
                     }
                 case "Hard":
                     {
-                        if (CurrentMenu == 2 || CurrentMenu == -2)
-                        {
-                            g.DrawImage(new Bitmap("Assets/Menu/Setting_Page_H_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                        }
-                        else if (CurrentMenu == 22)
-                        {
-                            DrawDubb();
-                            g.DrawImage(new Bitmap("Assets/Menu/Setting_NoBg_H_Hover.png"), 0, 0, this.ClientSize.Width, this.ClientSize.Height);
-                        }
+                        DrawDubb(new Bitmap("Assets/Menu/Setting_NoBg_H_Hover.png"));
                         GameTimer.Interval = 50;
                         break;
                     }
@@ -1221,6 +1198,15 @@ namespace Game
             Graphics g2 = Graphics.FromImage(off);
             Graphics g = this.CreateGraphics();
             DrawScene(g2);
+            g.DrawImage(off, 0, 0);
+        }
+
+        private void DrawDubb(Bitmap pop)
+        {
+            Graphics g2 = Graphics.FromImage(off);
+            Graphics g = this.CreateGraphics();
+            DrawScene(g2);
+            g2.DrawImage(pop, 0, 0, this.ClientSize.Width, this.ClientSize.Height);
             g.DrawImage(off, 0, 0);
         }
 
