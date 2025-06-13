@@ -282,6 +282,11 @@ namespace Game
                 }
                 else if (Ben.Index == 6)
                 {
+                    Ben.Character = "WildMutt";
+                    Ben.Index = 7;
+                }
+                else if (Ben.Index == 7)
+                {
                     Ben.Character = "Ben";
                     Ben.Index = 0;
                 }
@@ -803,7 +808,7 @@ namespace Game
                                 }
                             case "Jump":
                                 {
-                                    if (Ben.rDst.X + Ben.rDst.Width < this.ClientSize.Width)
+                                    if (Ben.rDst.X + Ben.rDst.Width + Ben.Characters[Ben.Index].JumpSpeed < this.ClientSize.Width)
                                     {
                                         Ben.rDst.X += Ben.Characters[Ben.Index].JumpSpeed;
                                         if(Ben.Characters[Ben.Index].CurrentFrame <= Ben.CurrentFramesCt / 2)
