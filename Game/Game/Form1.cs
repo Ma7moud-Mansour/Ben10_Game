@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NAudio.Wave;
+using System.Runtime.InteropServices;
 
 
 namespace Game
@@ -25,11 +26,13 @@ namespace Game
         public List<Bitmap> Grass = new List<Bitmap>();
         public List<Bitmap> Trees = new List<Bitmap>();
         public List<Bitmap> Ground = new List<Bitmap>();
+        public List<Bitmap> Ladder = new List<Bitmap>();
         public List<Enemy> Enemies = new List<Enemy>();
         public List<int> ScrollingFocus = new List<int>();
         public List<Fire> Bullets = new List<Fire>();
         public List<Fire> Lassers = new List<Fire>();
         public int MarginGravity = 50;
+        public List<Elevator> Elevators = new List<Elevator>();
     }
     public class Character
     {
@@ -124,6 +127,18 @@ namespace Game
         public int Speed = 10;
         public int Damage = 10;
     }
+    public class Elevator
+    {
+        public int X;
+        public int Y;
+        public int dx;
+        public int dy;
+        public bool Access = true;
+        public Bitmap img;
+        public int RegionU;
+        public int RegionD;
+        public int Speed;
+    }
     public partial class Form1 : Form
     {
         private IWavePlayer selectOutput;
@@ -165,6 +180,7 @@ namespace Game
             EnemyImg();
             MoveEnemy();
             EnemyCheckDirection();
+            MoveElevators();
             Gravity();
             MoveBullets();
             DamageBullets();
@@ -596,7 +612,30 @@ namespace Game
             map.ScrollingFocus.Add(3000);
             map.ScrollingFocus.Add(4000);
             map.ScrollingFocus.Add(6000);
+            Elevator elevator = new Elevator();
+            elevator.X = 4200;
+            elevator.Y = 1100;
+            elevator.RegionU = 100;
+            elevator.RegionD = 1100;
+            elevator.Speed = 50;
+            elevator.dy = -1;
+            elevator.dx = 0;
+            elevator.img = new Bitmap("Assets/Map_1/elv.png");
+            map.Elevators.Add(elevator);
             Maps.Add(map);
+
+            // Map_2
+            map = new Map();
+            map.Mountains.Add(new Bitmap("Assets/Map_2/Map_2.png"));
+            map.Ground.Add(new Bitmap("Assets/Map_2/Map_2_Ground.png"));
+            map.Ground.Add(new Bitmap("Assets/Map_2/Map_2_Ladder.png"));
+            DrawMap(map, map.Ground[0].Width, map.Ground[0].Height);
+            map.StartX = 0;
+            map.StartY = map.img.Height - this.ClientSize.Height;
+            map.rDst = new Rectangle(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+            map.rSrc = new Rectangle(map.StartX, map.StartY, this.ClientSize.Width, this.ClientSize.Height);
+            Maps.Add(map);
+            //CurrentMap = 1;
 
             // Ben10 Characters
             StreamReader SR = new StreamReader("Assets/Characters/Ben10_Characters.txt");
@@ -864,6 +903,11 @@ namespace Game
         {
             Graphics g = e.Graphics;
             g.Clear(Color.Black);
+        }
+
+        private void MoveElevators()
+        {
+
         }
 
         private void MoveBullets()
@@ -1320,7 +1364,11 @@ namespace Game
                 //{
                 //    i = Maps[CurrentMap].Ground[0].Height - 1;
                 //}
-                int i = Maps[CurrentMap].Ground[0].Height - 1;
+                int i = Maps[CurrentMap].rSrc.Y + Ben.rDst.Y + Ben.rDst.Height - 1;
+                if (i < 0 || i >= Maps[CurrentMap].Ground[0].Height)
+                {
+                    i = Maps[CurrentMap].Ground[0].Height - 1;
+                }
                 while (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, i).A != 0)
                 {
                     i--;
@@ -1730,6 +1778,13 @@ namespace Game
                 ltrav = Maps[CurrentMap].Lassers[i];
                 g.DrawImage(ltrav.img, ltrav.rDst.X - Maps[CurrentMap].rSrc.X, ltrav.rDst.Y - Maps[CurrentMap].rSrc.Y, ltrav.rDst.Width, ltrav.img.Height);
                 Maps[CurrentMap].Lassers.RemoveAt(i--);
+            }
+            // Draw Elevators
+            Elevator vtrav;
+            for (int i = 0; i < Maps[CurrentMap].Elevators.Count; i++)
+            {
+                vtrav = Maps[CurrentMap].Elevators[i];
+                g.DrawImage(vtrav.img, vtrav.X - Maps[CurrentMap].rSrc.X, vtrav.Y - Maps[CurrentMap].rSrc.Y, vtrav.img.Width, vtrav.img.Height);
             }
             // Draw Ben10 Character
             g.DrawImage(Ben.CurrentBenImg, Ben.rDst, Ben.rSrc, GraphicsUnit.Pixel);
