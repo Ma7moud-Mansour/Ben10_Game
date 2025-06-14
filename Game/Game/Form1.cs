@@ -72,6 +72,7 @@ namespace Game
         public int DieSpeed;
         public List<Bitmap> Die_Right_Frames = new List<Bitmap>();
         public List<Bitmap> Die_Left_Frames = new List<Bitmap>();
+        public List<Bitmap> Climb_Front_Frames = new List<Bitmap>();
     }
     public class Ben10
     {
@@ -586,7 +587,7 @@ namespace Game
                 line = SR.ReadLine();
                 string[] temp = line.Split(',');
                 int iTemp = 0;
-                if(temp.Count() >= 0 && temp.Count() <= 37)
+                if(temp.Count() >= 0 && temp.Count() <= 38)
                 {
                     Character pnn = new Character();
                     pnn.Name = temp[iTemp++];
@@ -720,6 +721,11 @@ namespace Game
                     for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
                         pnn.Die_Left_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Die_Left/" + pnn.Name + "_Die_Left_Frame_" + (i + 1) + ".png"));
+                    }
+                    iTemp++;
+                    for (int i = 0; i < int.Parse(temp[iTemp]); i++)
+                    {
+                        pnn.Climb_Front_Frames.Add(new Bitmap("Assets/Characters/" + pnn.Name + "/Climb_Front/" + pnn.Name + "_Climb_Front_Frame_" + (i + 1) + ".png"));
                     }
                     iTemp++;
                     Ben.Characters.Add(pnn);
