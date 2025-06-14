@@ -27,7 +27,8 @@ namespace Game
         public List<Bitmap> Ground = new List<Bitmap>();
         public List<Enemy> Enemies = new List<Enemy>();
         public List<int> ScrollingFocus = new List<int>();
-        public List<Bullet> Bullets = new List<Bullet>();
+        public List<Fire> Bullets = new List<Fire>();
+        public List<Fire> Lassers = new List<Fire>();
         public int MarginGravity = 50;
     }
     public class Character
@@ -112,7 +113,7 @@ namespace Game
         public bool AcessMove = true;
         public int CurrentFramesCt;
     }
-    public class Bullet
+    public class Fire
     {
         public string Owner = "Ben";
         public Rectangle rDst = new Rectangle();
@@ -167,6 +168,7 @@ namespace Game
             Gravity();
             MoveBullets();
             DamageBullets();
+            DamageLassers();
             Scrolling();
             Ben.CurrentBenImg = BenImg();
             EnemyImg();
@@ -906,6 +908,28 @@ namespace Game
             }
         }
 
+        private void DamageLassers()
+        {
+            for (int i = 0; i < Maps[CurrentMap].Lassers.Count; i++)
+            {
+                for (int k = 0; k < Maps[CurrentMap].Enemies.Count; k++)
+                {
+                    if (Maps[CurrentMap].Lassers[i].Owner == "Ben")
+                    {
+                        if (Maps[CurrentMap].Lassers[i].rDst.X + Maps[CurrentMap].Lassers[i].rDst.Width >= Maps[CurrentMap].Enemies[k].rDst.X && Maps[CurrentMap].Lassers[i].rDst.X <= Maps[CurrentMap].Enemies[k].rDst.X + Maps[CurrentMap].Enemies[k].CurrentImg.Width && Maps[CurrentMap].Lassers[i].rDst.Y >= Maps[CurrentMap].Enemies[k].rDst.Y && Maps[CurrentMap].Lassers[i].rDst.Y <= Maps[CurrentMap].Enemies[k].rDst.Y + Maps[CurrentMap].Enemies[k].CurrentImg.Height)
+                        {
+                            Maps[CurrentMap].Enemies[k].Health -= Maps[CurrentMap].Lassers[i].Damage;
+                            if (Maps[CurrentMap].Enemies[k].Health <= 0)
+                            {
+                                Maps[CurrentMap].Enemies.RemoveAt(k);
+                                k--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void BenPowerConvert()
         {
             if (Ben.Index == 0 && Ben.PowerConvert < 100)
@@ -1208,7 +1232,7 @@ namespace Game
                         Ben.BenAcessMove = true;
                         if (Ben.Characters[Ben.Index].FireSpeed < 50)
                         {
-                            Bullet bullet = new Bullet();
+                            Fire bullet = new Fire();
                             if (direction == "Right")
                             {
                                 bullet.dx = 1;
@@ -1231,7 +1255,28 @@ namespace Game
                         }
                         else
                         {
-                            // Lasser Code
+                            Fire lasser = new Fire();
+                            if (direction == "Right")
+                            {
+                                lasser.dx = 0;
+                                lasser.img = Ben.Characters[Ben.Index].Fire_Right_Frames[Ben.Characters[Ben.Index].Fire_Right_Frames.Count - 1];
+                                lasser.rDst.X = Ben.rDst.X + Ben.rDst.Width + Maps[CurrentMap].rSrc.X;
+                                lasser.rDst.Y = Ben.rDst.Y + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height;
+                                lasser.rDst.Width = this.ClientSize.Width - lasser.rDst.X + Maps[CurrentMap].rSrc.X;
+                            }
+                            else
+                            {
+                                lasser.dx = -1;
+                                lasser.img = Ben.Characters[Ben.Index].Fire_Left_Frames[Ben.Characters[Ben.Index].Fire_Left_Frames.Count - 1];
+                                lasser.rDst.X = Maps[CurrentMap].rSrc.X;
+                                lasser.rDst.Y = Ben.rDst.Y + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height;
+                                lasser.rDst.Width = Ben.rDst.X;
+                            }
+                            lasser.dy = 0;
+                            lasser.Speed = Ben.Characters[Ben.Index].FireSpeed;
+                            lasser.Damage = 10;
+                            lasser.Owner = "Ben";
+                            Maps[CurrentMap].Lassers.Add(lasser);
                         }
                     }
                     if (Ben.Characters[Ben.Index].CurrentFrame >= Ben.CurrentFramesCt)
@@ -1672,11 +1717,19 @@ namespace Game
                 g.FillRectangle(Brushes.Red, etrav.rDst.X - Maps[CurrentMap].rSrc.X, etrav.rDst.Y - Maps[CurrentMap].rSrc.Y - 10, etrav.Health, 20);
             }
             // Draw Bullets
-            Bullet btrav;
+            Fire btrav;
             for (int i = 0; i < Maps[CurrentMap].Bullets.Count; i++)
             {
                 btrav = Maps[CurrentMap].Bullets[i];
                 g.DrawImage(btrav.img, btrav.rDst.X - Maps[CurrentMap].rSrc.X, btrav.rDst.Y - Maps[CurrentMap].rSrc.Y, btrav.img.Width, btrav.img.Height);
+            }
+            // Draw Lassers
+            Fire ltrav;
+            for (int i = 0; i < Maps[CurrentMap].Lassers.Count; i++)
+            {
+                ltrav = Maps[CurrentMap].Lassers[i];
+                g.DrawImage(ltrav.img, ltrav.rDst.X - Maps[CurrentMap].rSrc.X, ltrav.rDst.Y - Maps[CurrentMap].rSrc.Y, ltrav.rDst.Width, ltrav.img.Height);
+                Maps[CurrentMap].Lassers.RemoveAt(i--);
             }
             // Draw Ben10 Character
             g.DrawImage(Ben.CurrentBenImg, Ben.rDst, Ben.rSrc, GraphicsUnit.Pixel);
