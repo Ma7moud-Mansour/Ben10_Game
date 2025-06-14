@@ -1,3 +1,3 @@
-Enemy_Name,X,YStandS,StandR,StandL,WalkS,WalkR,WalkL,FlyS,FlyR,FlyL,HitS,HitR,HitL,FireS,FireR,FireL,DamageS,DamageR,DamageL,DieS,DieR,DieL
-BlueBug,2500,900,1,1,1,15,8,8,0,0,0,0,0,0,10,9,9,1,3,3,1,5,5
-GreenBug,1500,900,1,1,1,15,10,10,0,0,0,0,0,0,5,5,5,1,4,4,1,5,5
+Enemy_Name,X,Y,SRegion,ERegion,StandS,StandR,StandL,WalkS,WalkR,WalkL,FlyS,FlyR,FlyL,HitS,HitR,HitL,FireS,FireR,FireL,DamageS,DamageR,DamageL,DieS,DieR,DieL
+BlueBug,2500,900,2000,2500,1,1,1,15,8,8,0,0,0,0,0,0,10,9,9,1,3,3,1,5,5
+GreenBug,1500,900,1000,1500,1,1,1,15,10,10,0,0,0,0,0,0,5,5,5,1,4,4,1,5,5

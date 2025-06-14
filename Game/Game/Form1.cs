@@ -97,6 +97,8 @@ namespace Game
         public Rectangle rDst = new Rectangle();
         public Rectangle rSrc = new Rectangle();
         public Bitmap CurrentImg = new Bitmap("Assets/Logo.ico");
+        public int StartRegion;
+        public int EndRegion;
         public int Health = 100;
         public int Damage = 10;
         public int Speed = 5;
@@ -727,12 +729,14 @@ namespace Game
                 line = SR.ReadLine();
                 string[] temp = line.Split(',');
                 int iTemp = 0;
-                if (temp.Count() >= 0 && temp.Count() <= 24)
+                if (temp.Count() >= 0 && temp.Count() <= 26)
                 {
                     Enemy pnn = new Enemy();
                     pnn.Name = temp[iTemp++];
                     pnn.rDst.X = int.Parse(temp[iTemp++]);
                     pnn.rDst.Y = int.Parse(temp[iTemp++]);
+                    pnn.StartRegion = int.Parse(temp[iTemp++]);
+                    pnn.EndRegion = int.Parse(temp[iTemp++]);
                     pnn.StandSpeed = int.Parse(temp[iTemp++]);
                     for (int i = 0; i < int.Parse(temp[iTemp]); i++)
                     {
