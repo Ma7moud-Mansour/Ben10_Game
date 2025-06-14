@@ -27,6 +27,7 @@ namespace Game
         public List<Bitmap> Ground = new List<Bitmap>();
         public List<Enemy> Enemies = new List<Enemy>();
         public List<int> ScrollingFocus = new List<int>();
+        public List<Bullet> Bullets = new List<Bullet>();
         public int MarginGravity = 50;
     }
     public class Character
@@ -111,6 +112,17 @@ namespace Game
         public bool AcessMove = true;
         public int CurrentFramesCt;
     }
+    public class Bullet
+    {
+        public string Owner = "Ben";
+        public Rectangle rDst = new Rectangle();
+        public Rectangle rSrc = new Rectangle();
+        public Bitmap img;
+        public int dx = 0;
+        public int dy = 0;
+        public int Speed = 10;
+        public int Damage = 10;
+    }
     public partial class Form1 : Form
     {
         private IWavePlayer selectOutput;
@@ -153,6 +165,8 @@ namespace Game
             MoveEnemy();
             EnemyCheckDirection();
             Gravity();
+            MoveBullets();
+            DamageBullets();
             Scrolling();
             Ben.CurrentBenImg = BenImg();
             EnemyImg();
@@ -263,6 +277,11 @@ namespace Game
                     if (IntroTimer.Enabled)
                     {
                         CurrentMenu = 0;
+                    }
+                    else if (GameTimer.Enabled && Ben.Characters[Ben.Index].FireSpeed != 0)
+                    {
+                        Ben.BenMotion = "Fire";
+                        Ben.BenAcessMove = false;
                     }
                 }
                 if (e.Alt)
@@ -845,6 +864,48 @@ namespace Game
             g.Clear(Color.Black);
         }
 
+        private void MoveBullets()
+        {
+            for (int i = 0; i < Maps[CurrentMap].Bullets.Count; i++)
+            {
+                Maps[CurrentMap].Bullets[i].rDst.X += (Maps[CurrentMap].Bullets[i].Speed * Maps[CurrentMap].Bullets[i].dx);
+                Maps[CurrentMap].Bullets[i].rDst.Y += (Maps[CurrentMap].Bullets[i].Speed * Maps[CurrentMap].Bullets[i].dy);
+            }
+        }
+
+        private void DamageBullets()
+        {
+            for (int i = 0; i < Maps[CurrentMap].Bullets.Count; i++)
+            {
+                if (Maps[CurrentMap].Bullets[i].rDst.X < 0 || Maps[CurrentMap].Bullets[i].rDst.X > Maps[CurrentMap].Ground[0].Width || Maps[CurrentMap].Bullets[i].rDst.Y < 0 || Maps[CurrentMap].Bullets[i].rDst.Y > Maps[CurrentMap].Ground[0].Width)
+                {
+                    Maps[CurrentMap].Bullets.RemoveAt(i);
+                    i--;
+                }
+                else
+                {
+                    for (int k = 0; k < Maps[CurrentMap].Enemies.Count; k++)
+                    {
+                        if (Maps[CurrentMap].Bullets[i].Owner == "Ben")
+                        {
+                            if (Maps[CurrentMap].Bullets[i].rDst.X + Maps[CurrentMap].Bullets[i].img.Width / 2 >= Maps[CurrentMap].Enemies[k].rDst.X && Maps[CurrentMap].Bullets[i].rDst.X + Maps[CurrentMap].Bullets[i].img.Width / 2 <= Maps[CurrentMap].Enemies[k].rDst.X + Maps[CurrentMap].Enemies[k].CurrentImg.Width && Maps[CurrentMap].Bullets[i].rDst.Y >= Maps[CurrentMap].Enemies[k].rDst.Y && Maps[CurrentMap].Bullets[i].rDst.Y <= Maps[CurrentMap].Enemies[k].rDst.Y + Maps[CurrentMap].Enemies[k].CurrentImg.Height)
+                            {
+                                Maps[CurrentMap].Enemies[k].Health -= Maps[CurrentMap].Bullets[i].Damage;
+                                if (Maps[CurrentMap].Enemies[k].Health <= 0)
+                                {
+                                    Maps[CurrentMap].Enemies.RemoveAt(k);
+                                    k--;
+                                }
+                                Maps[CurrentMap].Bullets.RemoveAt(i);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void BenPowerConvert()
         {
             if (Ben.Index == 0 && Ben.PowerConvert < 100)
@@ -1140,6 +1201,39 @@ namespace Game
                 else
                 {
                     Ben.Characters[Ben.Index].CurrentFrame++;
+                    if (Ben.BenMotion == "Fire" && Ben.Characters[Ben.Index].CurrentFrame >= Ben.CurrentFramesCt - 1)
+                    {
+                        Ben.Characters[Ben.Index].CurrentFrame = 0;
+                        Ben.BenMotion = "Stand";
+                        Ben.BenAcessMove = true;
+                        if (Ben.Characters[Ben.Index].FireSpeed < 50)
+                        {
+                            Bullet bullet = new Bullet();
+                            if (direction == "Right")
+                            {
+                                bullet.dx = 1;
+                                bullet.img = Ben.Characters[Ben.Index].Fire_Right_Frames[Ben.Characters[Ben.Index].Fire_Right_Frames.Count - 1];
+                                bullet.rDst.X = Ben.rDst.X + Ben.rDst.Width + Maps[CurrentMap].rSrc.X;
+                                bullet.rDst.Y = Ben.rDst.Y + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height;
+                            }
+                            else
+                            {
+                                bullet.dx = -1;
+                                bullet.img = Ben.Characters[Ben.Index].Fire_Left_Frames[Ben.Characters[Ben.Index].Fire_Left_Frames.Count - 1];
+                                bullet.rDst.X = Ben.rDst.X - bullet.img.Width + Maps[CurrentMap].rSrc.X;
+                                bullet.rDst.Y = Ben.rDst.Y + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height;
+                            }
+                            bullet.dy = 0;
+                            bullet.Speed = Ben.Characters[Ben.Index].FireSpeed;
+                            bullet.Damage = 10;
+                            bullet.Owner = "Ben";
+                            Maps[CurrentMap].Bullets.Add(bullet);
+                        }
+                        else
+                        {
+                            // Lasser Code
+                        }
+                    }
                     if (Ben.Characters[Ben.Index].CurrentFrame >= Ben.CurrentFramesCt)
                     {
                         Ben.Characters[Ben.Index].CurrentFrame = 0;
@@ -1259,33 +1353,55 @@ namespace Game
                     break;
                 case "Hit_Right":
                     img = Ben.Characters[Ben.Index].Hit_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Hit_Right_Frames.Count;
                     break;
                 case "Hit_Left":
                     img = Ben.Characters[Ben.Index].Hit_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Hit_Left_Frames.Count;
                     break;
                 case "Kick_Right":
                     img = Ben.Characters[Ben.Index].Kick_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Kick_Right_Frames.Count;
                     break;
                 case "Kick_Left":
                     img = Ben.Characters[Ben.Index].Kick_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Kick_Left_Frames.Count;
+                    break;
+                case "Fire_Right":
+                    img = Ben.Characters[Ben.Index].Fire_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Fire_Right_Frames.Count;
+                    break;
+                case "Fire_Left":
+                    img = Ben.Characters[Ben.Index].Fire_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Fire_Left_Frames.Count;
                     break;
                 case "Fall_Right":
                     img = Ben.Characters[Ben.Index].Fall_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Fall_Right_Frames.Count;
                     break;
                 case "Fall_Left":
                     img = Ben.Characters[Ben.Index].Fall_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Fall_Left_Frames.Count;
                     break;
                 case "Damage_Right":
                     img = Ben.Characters[Ben.Index].Damage_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Damage_Right_Frames.Count;
                     break;
                 case "Damage_Left":
                     img = Ben.Characters[Ben.Index].Damage_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Damage_Left_Frames.Count;
                     break;
                 case "Die_Right":
                     img = Ben.Characters[Ben.Index].Die_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Die_Right_Frames.Count;
                     break;
                 case "Die_Left":
                     img = Ben.Characters[Ben.Index].Die_Left_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Die_Left_Frames.Count;
+                    break;
+                case "Climb_Front":
+                    img = Ben.Characters[Ben.Index].Climb_Front_Frames[Ben.Characters[Ben.Index].CurrentFrame];
+                    Ben.CurrentFramesCt = Ben.Characters[Ben.Index].Climb_Front_Frames.Count;
                     break;
                 default:
                     img = Ben.Characters[Ben.Index].Stand_Right_Frames[Ben.Characters[Ben.Index].CurrentFrame];
@@ -1547,14 +1663,20 @@ namespace Game
             // Draw Map
             g.DrawImage(Maps[CurrentMap].img, Maps[CurrentMap].rDst, Maps[CurrentMap].rSrc, GraphicsUnit.Pixel);
             // Draw Enemies
-            Enemy ptrav;
+            Enemy etrav;
             for (int i = 0; i < Maps[CurrentMap].Enemies.Count; i++)
             {
-                ptrav = Maps[CurrentMap].Enemies[i];
-                //if (ptrav.rDst.X >= Maps[CurrentMap].rSrc.X && ptrav.rDst.X + ptrav.rSrc.Width <= Maps[CurrentMap].rSrc.X + this.ClientSize.Width)
-                //{
-                    g.DrawImage(ptrav.CurrentImg, ptrav.rDst.X - Maps[CurrentMap].rSrc.X, ptrav.rDst.Y - Maps[CurrentMap].rSrc.Y, ptrav.CurrentImg.Width, ptrav.CurrentImg.Height);
-                //}
+                etrav = Maps[CurrentMap].Enemies[i];
+                g.DrawImage(etrav.CurrentImg, etrav.rDst.X - Maps[CurrentMap].rSrc.X, etrav.rDst.Y - Maps[CurrentMap].rSrc.Y, etrav.CurrentImg.Width, etrav.CurrentImg.Height);
+                g.FillRectangle(Brushes.White, etrav.rDst.X - Maps[CurrentMap].rSrc.X, etrav.rDst.Y - Maps[CurrentMap].rSrc.Y - 10, 100, 20);
+                g.FillRectangle(Brushes.Red, etrav.rDst.X - Maps[CurrentMap].rSrc.X, etrav.rDst.Y - Maps[CurrentMap].rSrc.Y - 10, etrav.Health, 20);
+            }
+            // Draw Bullets
+            Bullet btrav;
+            for (int i = 0; i < Maps[CurrentMap].Bullets.Count; i++)
+            {
+                btrav = Maps[CurrentMap].Bullets[i];
+                g.DrawImage(btrav.img, btrav.rDst.X - Maps[CurrentMap].rSrc.X, btrav.rDst.Y - Maps[CurrentMap].rSrc.Y, btrav.img.Width, btrav.img.Height);
             }
             // Draw Ben10 Character
             g.DrawImage(Ben.CurrentBenImg, Ben.rDst, Ben.rSrc, GraphicsUnit.Pixel);
