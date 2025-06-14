@@ -191,6 +191,7 @@ namespace Game
             ManageBenRectanglesTheme();
             BenPowerConvert();
             DrawDubb();
+            CheckWin();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -603,6 +604,7 @@ namespace Game
             map.Trees.Add(new Bitmap("Assets/Map_1/Trees_2.png"));
             map.Trees.Add(new Bitmap("Assets/Map_1/Trees_3.png"));
             map.Ground.Add(new Bitmap("Assets/Map_1/Ground.png"));
+            map.Ground.Add(new Bitmap("Assets/Map_1/Ground.png"));
             DrawMap(map, map.Ground[0].Width, map.Ground[0].Height);
             map.StartX = 0;
             map.StartY = map.img.Height - this.ClientSize.Height;
@@ -905,9 +907,34 @@ namespace Game
             g.Clear(Color.Black);
         }
 
+        private void CheckWin()
+        {
+            if (Maps[CurrentMap].Enemies.Count > -1 && Ben.rDst.Y + Ben.rDst.Height <= 0)
+            {
+                CurrentMap++;
+                if (CurrentMap == 1)
+                {
+
+                }
+            }
+        }
+
         private void MoveElevators()
         {
-
+            for (int i = 0; i < Maps[CurrentMap].Elevators.Count; i++)
+            {
+                Maps[CurrentMap].Elevators[i].X += (Maps[CurrentMap].Elevators[i].Speed * Maps[CurrentMap].Elevators[i].dx);
+                Maps[CurrentMap].Elevators[i].Y += (Maps[CurrentMap].Elevators[i].Speed * Maps[CurrentMap].Elevators[i].dy);
+                if (Maps[CurrentMap].Elevators[i].Y <= Maps[CurrentMap].Elevators[i].RegionU || Maps[CurrentMap].Elevators[i].Y >= Maps[CurrentMap].Elevators[i].RegionD)
+                {
+                    Maps[CurrentMap].Elevators[i].dy *= -1;
+                }
+                Bitmap pnn = new Bitmap("Assets/Map_1/Ground.png");
+                Maps[CurrentMap].Ground.Add(pnn);
+                Maps[CurrentMap].Ground.RemoveAt(0);
+                Graphics g = Graphics.FromImage(Maps[CurrentMap].Ground[0]);
+                g.DrawImage(Maps[CurrentMap].Elevators[i].img, Maps[CurrentMap].Elevators[i].X, Maps[CurrentMap].Elevators[i].Y);
+            }
         }
 
         private void MoveBullets()
@@ -1359,11 +1386,6 @@ namespace Game
             }
             else if (Maps[CurrentMap].Ground[0].GetPixel(Ben.rDst.X + Ben.rDst.Width / 2 + Maps[CurrentMap].rSrc.X, Ben.rDst.Y + Ben.rDst.Height - Maps[CurrentMap].MarginGravity + Maps[CurrentMap].Ground[0].Height - this.ClientSize.Height - 1).A != 0)
             {
-                //int i = Maps[CurrentMap].Ground[0].Height - 1 - this.ClientSize.Height + Ben.rDst.Y + Ben.rDst.Height;
-                //if (i > Maps[CurrentMap].Ground[0].Height)
-                //{
-                //    i = Maps[CurrentMap].Ground[0].Height - 1;
-                //}
                 int i = Maps[CurrentMap].rSrc.Y + Ben.rDst.Y + Ben.rDst.Height - 1;
                 if (i < 0 || i >= Maps[CurrentMap].Ground[0].Height)
                 {
