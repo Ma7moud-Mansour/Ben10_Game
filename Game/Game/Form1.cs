@@ -99,6 +99,7 @@ namespace Game
         public Bitmap CurrentImg = new Bitmap("Assets/Logo.ico");
         public int StartRegion;
         public int EndRegion;
+        public string DirectionX = "Right";
         public int Health = 100;
         public int Damage = 10;
         public int Speed = 5;
@@ -107,6 +108,7 @@ namespace Game
         public string Motion = "Stand_Right";
         public int CurrentSpeed;
         public bool AcessMove = true;
+        public int CurrentFramesCt;
     }
     public partial class Form1 : Form
     {
@@ -145,6 +147,10 @@ namespace Game
         {
             BenMotionImg(Ben.BenMotion, Ben.BenDirection);
             BenMotion(Ben.BenMotion, Ben.BenDirection);
+            EnemyMotionImg();
+            EnemyImg();
+            MoveEnemy();
+            EnemyCheckDirection();
             Gravity();
             Scrolling();
             Ben.CurrentBenImg = BenImg();
@@ -1293,15 +1299,19 @@ namespace Game
                 {
                     case "Stand_Right":
                         ptrav.CurrentImg = ptrav.Stand_Right_Frames[ptrav.CurrentFrame];
+                        ptrav.CurrentFramesCt = ptrav.Stand_Right_Frames.Count;
                         break;
                     case "Stand_Left":
                         ptrav.CurrentImg = ptrav.Stand_Left_Frames[ptrav.CurrentFrame];
+                        ptrav.CurrentFramesCt = ptrav.Stand_Left_Frames.Count;
                         break;
                     case "Walk_Right":
                         ptrav.CurrentImg = ptrav.Walk_Right_Frames[ptrav.CurrentFrame];
+                        ptrav.CurrentFramesCt = ptrav.Walk_Right_Frames.Count;
                         break;
                     case "Walk_Left":
                         ptrav.CurrentImg = ptrav.Walk_Left_Frames[ptrav.CurrentFrame];
+                        ptrav.CurrentFramesCt = ptrav.Walk_Left_Frames.Count;
                         break;
                     case "Fly_Right":
                         ptrav.CurrentImg = ptrav.Fly_Right_Frames[ptrav.CurrentFrame];
@@ -1330,6 +1340,63 @@ namespace Game
                     default:
                         ptrav.CurrentImg = ptrav.Stand_Right_Frames[ptrav.CurrentFrame];
                         break;
+                }
+                Maps[CurrentMap].Enemies[i] = ptrav;
+            }
+        }
+        private void EnemyMotionImg()
+        {
+            if (Maps[CurrentMap].Enemies.Count > 0)
+            {
+                for (int i = 0; i < Maps[CurrentMap].Enemies.Count; i++)
+                {
+                    if (Maps[CurrentMap].Enemies[i].CurrentMotion != "Walk" + '_' + Maps[CurrentMap].Enemies[i].DirectionX)
+                    {
+                        Maps[CurrentMap].Enemies[i].CurrentMotion = "Walk" + '_' + Maps[CurrentMap].Enemies[i].DirectionX;
+                        Maps[CurrentMap].Enemies[i].CurrentFrame = 0;
+
+
+                        Maps[CurrentMap].Enemies[i].Motion = Maps[CurrentMap].Enemies[i].CurrentMotion;
+
+                    }
+                    else
+                    {
+                        Maps[CurrentMap].Enemies[i].CurrentFrame++;
+                        if (Maps[CurrentMap].Enemies[i].CurrentFrame >= Maps[CurrentMap].Enemies[i].CurrentFramesCt)
+                        {
+                            Maps[CurrentMap].Enemies[i].CurrentFrame = 0;
+                            
+                        }
+                    }
+                }
+            }
+        }
+
+        void EnemyCheckDirection()
+        {
+            for (int i = 0; i < Maps[CurrentMap].Enemies.Count; i++)
+            {
+                if(Maps[CurrentMap].Enemies[i].rDst.X >= Maps[CurrentMap].Enemies[i].EndRegion)
+                {
+                    Maps[CurrentMap].Enemies[i].DirectionX = "Left";
+                }
+                else if(Maps[CurrentMap].Enemies[i].rDst.X <= Maps[CurrentMap].Enemies[i].StartRegion)
+                {
+                    Maps[CurrentMap].Enemies[i].DirectionX = "Right";
+                }
+            }
+        }
+        void MoveEnemy()
+        {
+            for( int i = 0; i< Maps[CurrentMap].Enemies.Count; i++ )
+            {
+                if(Maps[CurrentMap].Enemies[i].DirectionX=="Right")
+                {
+                    Maps[CurrentMap].Enemies[i].rDst.X += 10;
+                }
+                else if (Maps[CurrentMap].Enemies[i].DirectionX == "Left")
+                {
+                    Maps[CurrentMap].Enemies[i].rDst.X -= 10;
                 }
             }
         }
