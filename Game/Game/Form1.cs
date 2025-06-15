@@ -325,6 +325,17 @@ namespace Game
                     }
                     Ben.SelectingAlien = true;
                 }
+                if(e.KeyCode==Keys.C)
+                {
+                    if (Ben.Characters[Ben.Index].Climb_Front_Frames.Count>0)
+                    {
+                        if (Ben.rDst.X > Maps[CurrentMap].rSrc.Width - 600)
+                        {
+                            Ben.BenMotion = "Climb";
+                            Ben.BenDirection = "Front";
+                        }
+                    }
+                }
             }
         }
 
@@ -605,6 +616,7 @@ namespace Game
             map.Trees.Add(new Bitmap("Assets/Map_1/Trees_3.png"));
             map.Ground.Add(new Bitmap("Assets/Map_1/Ground.png"));
             map.Ground.Add(new Bitmap("Assets/Map_1/Ground.png"));
+            map.Ladder.Add(new Bitmap("Assets/Map_1/Ladder.png"));
             DrawMap(map, map.Ground[0].Width, map.Ground[0].Height);
             map.StartX = 0;
             map.StartY = map.img.Height - this.ClientSize.Height;
@@ -624,6 +636,7 @@ namespace Game
             elevator.dx = 0;
             elevator.img = new Bitmap("Assets/Map_1/elv.png");
             map.Elevators.Add(elevator);
+            
             Maps.Add(map);
 
             // Map_2
@@ -911,9 +924,10 @@ namespace Game
         {
             if (Maps[CurrentMap].Enemies.Count > -1 && Ben.rDst.Y + Ben.rDst.Height <= 0)
             {
-                CurrentMap++;
+                //CurrentMap++;
                 if (CurrentMap == 1)
                 {
+                    
 
                 }
             }
@@ -1672,6 +1686,10 @@ namespace Game
             for (int i = 0; i < map.Ground.Count; i++)
             {
                 g.DrawImage(map.Ground[i], 0, 0, map.img.Width, map.img.Height);
+            }
+            for (int i = 0; i < map.Ladder.Count; i++)
+            {
+                g.DrawImage(map.Ladder[i], 0, 0, map.img.Width, map.img.Height);
             }
         }
 
