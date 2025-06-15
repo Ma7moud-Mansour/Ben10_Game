@@ -191,6 +191,7 @@ namespace Game
             ManageBenRectanglesTheme();
             BenPowerConvert();
             DrawDubb();
+            GC.Collect();
             CheckWin();
         }
 
