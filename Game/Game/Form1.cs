@@ -177,9 +177,9 @@ namespace Game
             BenMotionImg(Ben.BenMotion, Ben.BenDirection);
             BenMotion(Ben.BenMotion, Ben.BenDirection);
             EnemyMotionImg();
-            EnemyImg();
             MoveEnemy();
             EnemyCheckDirection();
+            EnemyAttack();
             MoveElevators();
             Gravity();
             MoveBullets();
@@ -923,6 +923,10 @@ namespace Game
 
         private void CheckWin()
         {
+            if (Ben.Health <= 0)
+            {
+                MessageBox.Show("You Lose");
+            }
             if (Maps[CurrentMap].Enemies.Count > -1 && Ben.rDst.Y + Ben.rDst.Height <= 0)
             {
                 //CurrentMap++;
@@ -963,7 +967,7 @@ namespace Game
 
         private void DamageBullets()
         {
-            for (int i = 0; i < Maps[CurrentMap].Bullets.Count; i++)
+            for (int i = 0; i < Maps[CurrentMap].Bullets.Count && i >= 0; i++)
             {
                 if (Maps[CurrentMap].Bullets[i].rDst.X < 0 || Maps[CurrentMap].Bullets[i].rDst.X > Maps[CurrentMap].Ground[0].Width || Maps[CurrentMap].Bullets[i].rDst.Y < 0 || Maps[CurrentMap].Bullets[i].rDst.Y > Maps[CurrentMap].Ground[0].Width)
                 {
@@ -987,6 +991,19 @@ namespace Game
                                 Maps[CurrentMap].Bullets.RemoveAt(i);
                                 i--;
                                 break;
+                            }
+                        }
+                        else
+                        {
+                            if (Maps[CurrentMap].rSrc.X + Ben.rDst.X <= Maps[CurrentMap].Bullets[i].rDst.X && Maps[CurrentMap].rSrc.X + Ben.rDst.X + Ben.CurrentBenImg.Width >= Maps[CurrentMap].Bullets[i].rDst.X)
+                            {
+                                if (Maps[CurrentMap].rSrc.Y + Ben.rDst.Y <= Maps[CurrentMap].Bullets[i].rDst.Y && Ben.rDst.Y + Ben.CurrentBenImg.Height + Maps[CurrentMap].rSrc.Height >= Maps[CurrentMap].Bullets[i].rDst.Y)
+                                {
+                                    Ben.Health -= 0.1f;
+                                    Maps[CurrentMap].Bullets.RemoveAt(i);
+                                    i--;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1149,6 +1166,49 @@ namespace Game
             }
         }
 
+        private void EnemyAttack()
+        {
+            for (int i = 0; i < Maps[CurrentMap].Enemies.Count; i++)
+            {
+                Enemy ptrav = Maps[CurrentMap].Enemies[i];
+                if (i == 1 || i == 0)
+                {
+                    if (Ben.rDst.X + Ben.rDst.Width + 1200 >= ptrav.rDst.X && Ben.rDst.X < ptrav.rDst.X && ptrav.DirectionX == "Left")
+                    {
+                        Fire bullet = new Fire();
+                        bullet.dx = -1;
+                        bullet.img = ptrav.Fire_Left_Frames[ptrav.Fire_Left_Frames.Count - 1];
+                        bullet.rDst.X = ptrav.rDst.X - bullet.img.Width;
+                        bullet.rDst.Y = ptrav.rDst.Y + 250;
+                        bullet.dy = 0;
+                        bullet.Speed = ptrav.FireSpeed;
+                        bullet.Damage = 10;
+                        bullet.Owner = "Enemy";
+                        Maps[CurrentMap].Bullets.Add(bullet);
+                    }
+                    else if (Ben.rDst.X - 1200 <= ptrav.rDst.X && Ben.rDst.X > ptrav.rDst.X + 700 && ptrav.DirectionX == "Right")
+                    {
+                        Fire bullet = new Fire();
+                        bullet.dx = 1;
+                        bullet.img = ptrav.Fire_Right_Frames[ptrav.Fire_Right_Frames.Count - 1];
+                        bullet.rDst.X = ptrav.rDst.X + ptrav.rDst.Width;
+                        bullet.rDst.Y = ptrav.rDst.Y;
+                        bullet.dy = 0;
+                        bullet.Speed = ptrav.FireSpeed;
+                        bullet.Damage = 10;
+                        bullet.Owner = "Enemy";
+                        Maps[CurrentMap].Bullets.Add(bullet);
+                    }
+                }
+                if (i == 2)
+                {
+                    if (Ben.rDst.X + Ben.rDst.Width >= ptrav.rDst.X && Ben.rDst.X <= ptrav.rDst.X && Ben.rDst.Y + Ben.rDst.Height >= ptrav.rDst.Y && Ben.rDst.Y <= ptrav.rDst.Y)
+                    {
+                        Ben.Health -= 2;
+                    }
+                }    
+            }
+        }
         private void BenMotion(string motion, string direction)
         {
             switch (direction)
